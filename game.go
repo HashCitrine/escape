@@ -7,22 +7,26 @@ import (
 	"strings"
 )
 
+var endGame = false
+
+func consoleClear() {
+	fmt.Print("\033[H\033[2J")
+}
+
 func PlayGame() {
+	consoleClear()
 	for {
-		if EndGame() {
-			break
-		}
 		DrawMap()
 		Script()
-
-		// var chose string
-		// fmt.Scan(&chose)
-		// fmt.Println("test : ", chose)
 
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
 		chose := scanner.Text()
-		fmt.Print("\033[H\033[2J") // clear
+
+		if endGame {
+			break
+		}
+		consoleClear()
 
 		Action(chose)
 	}
@@ -35,7 +39,6 @@ func DrawMap() {
 		if i > 0 {
 			fmt.Println("")
 		}
-		// fmt.Print("\t")
 		for j := 0; j < len(tempArr); j++ {
 			if j > 0 {
 				fmt.Print("\t")
@@ -48,14 +51,29 @@ func DrawMap() {
 
 func Script() {
 	fmt.Println()
+	fmt.Println()
 	currentPlace := getPlaceByCoords(playInfo.currentCoords)
 	if currentPlace == attributeMap[codePlayer].place[0] {
 		fmt.Println("(당신은 미로의 함정에 빠졌습니다. 이곳을 빠져나가야 합니다.)")
+		fmt.Println()
 	}
 
-	if currentPlace == attributeMap[codeCloseDoor].place[0] {
+	if endGame {
 		fmt.Println("(밝은 빛이 보입니다. 당신은 탈출에 성공했습니다.)")
+		return
 	}
+
+	fmt.Print("소지품 : ")
+	for i, inventory := range playInfo.inventory {
+		if i > 0 {
+			fmt.Print(", ")
+		}
+
+		fmt.Print(attributeMap[inventory].getName())
+	}
+
+	fmt.Println()
+	fmt.Println()
 
 	fmt.Println("(어떤 행동을 하시겠습니까?)")
 }
@@ -77,22 +95,16 @@ func Action(chose string) {
 		}
 	}
 
-	if act == nil {
-		fmt.Println("정신 차리자. 무엇이든 행동해야 한다.")
-		return
+	if act != nil {
+		justMove(act[0])
 	}
-
-	// 문
-	if len(act) > 1 {
-		// 1. 문 이름 구하기 attributeMap
-		fmt.Println("")
-	}
-
-	// 단순 이동
-	justMove(act[0])
 
 	// 특정 요소를 지칭하고 명령한 경우
 	for code, attribute := range attributeMap {
+		if code.isOpenDoor() {
+			continue
+		}
+
 		for i := range attribute.commands {
 			var command = attribute.commands[i]
 
@@ -115,168 +127,116 @@ func Action(chose string) {
 		}
 	}
 
-	// 2. 명령한 요소가 실행될 수 있는 환경인지 + act 명령에 적합한지 확인 후 실행
-	/* if item > 0 && door > 0 && item/100 == door/10 {
-
-	} */
-	if door > 0 && item > 0 {
-		openingDoor := door + item
-		aroundDoor := getAroundDoorCoords()
-		fmt.Println(aroundDoor)
-		if *aroundDoor == door && (openingDoor).isOpenDoor() {
-			// currentPlace := getPlaceByCoords(playInfo.currentCoords)
-
-			/* switch door {
-			case *playInfo.upPlace:
-				*playInfo.upPlace = openingDoor
-			case *playInfo.downPlace:
-				*playInfo.downPlace = openingDoor
-			case *playInfo.rightPlace:
-				*playInfo.rightPlace = openingDoor
-			case *playInfo.leftPlace:
-				*playInfo.leftPlace = openingDoor
-			} */
-			*aroundDoor = openingDoor
-		}
+	ifDoor := getAroundDoorCoords()
+	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpenDoor()
+	if door > 0 && !actCheck(act, door, ifDoor, ifDoorIsOpen) {
+		return
 	}
 
-	//
+	if door > 0 && item > 0 {
+		if ifDoor != nil && ifDoorIsOpen {
+			fmt.Printf("%s은 이미 열려있다. 지나갈 수 있을 것 같다.\n", attributeMap[(*ifDoor)].getName())
+			return
+		}
 
+		if !checkInventory(item) {
+			fmt.Printf("%s를 가지고 있지 않다. 다른 방법을 찾아보자.\n", attributeMap[item].getName())
+			return
+		}
+
+		openingDoor := door + item
+		aroundDoor := getAroundDoorCoords()
+
+		if *aroundDoor == door && openingDoor.isOpenDoor() {
+			fmt.Printf("%s(으)로 %s을 열었다. 이제 지나갈 수 있다.\n", attributeMap[item].getName(), attributeMap[door].getName())
+			*aroundDoor = openingDoor
+		} else {
+			fmt.Printf("%s(으)로는 %s을 열 수 없다. 다른 방법을 찾아보자.\n", attributeMap[item].getName(), attributeMap[door].getName())
+		}
+	}
 }
 
 func justMove(move Acting) {
 	// var move = act[0]
 	if move.direction == codeFloor {
-		tempPlaceCoords := playInfo.currentCoords
-
-		tempPlaceCoords.y = tempPlaceCoords.y + move.coords.y
-		tempPlaceCoords.x = tempPlaceCoords.x + move.coords.x
-
-		// 확인 필요 → field 이상의 값의 좌표가 들어왔을 경우
-		var directionPlace Code
-		var tempPlace *Code
-
-		// tempCheck := checkInField(tempPlaceCoords)
-		// fmt.Println(tempCheck)	// debug
-		if checkInField(tempPlaceCoords) {
-			tempPlace = getPlaceByCoords(tempPlaceCoords)
-			directionPlace = *tempPlace
-		} else {
-			directionPlace = codeBlank
-		}
-
-		/* tempPlace := getPlaceByCoords(tempPlaceCoords)
-		directionPlace := *tempPlace */
-		// 확인 필요
-
-		// debug
-		// fmt.Println("test : ", tempPlaceCoords)
-		// fmt.Println("directionAttribute : ", directionPlace)
-		// debug
-
-		if directionPlace == codeBlank {
+		directionCoords := newCoords(playInfo.currentCoords, move.coords)
+		if checkOutField(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
+			// directionPlace = *tempPlace
 			fmt.Println("막힌 길이다. 다시 생각해보자.")
 			return
 		}
 
-		if directionPlace.isDoor() {
-			doorName := attributeMap[directionPlace].commands[0]
-			fmt.Println(doorName, "이 닫혀 있다. 이대로는 나아갈 수 없다.")
+		directionPlace := getPlaceByCoords(directionCoords)
+
+		if (*directionPlace).isOpenDoor() {
+			if directionCoords == playInfo.goalCoords {
+				endGame = true
+				updatePlayerPlace(directionCoords, directionPlace)
+				return
+			}
+			doorName := attributeMap[Code((*directionPlace).getDoorNumber())*door].getName()
+			fmt.Printf("%s을 지나왔다.\n", doorName)
+
+			directionCoords = newCoords(directionCoords, move.coords)
+			directionPlace = getPlaceByCoords(directionCoords)
+
+			updatePlayerPlace(directionCoords, directionPlace)
 			return
 		}
 
-		if directionPlace.isItem() {
-			itemName := attributeMap[directionPlace].commands[0]
-			fmt.Println(itemName, "가 떨어져 있다. 어딘가에 사용할 수 있을 것 같다. 챙겨놓도록 하자.")
-			// playInfo.currentCoords = tempPlaceCoords
-			// *tempPlace = codePlayer
-			// return
+		if (*directionPlace).isDoor() {
+			doorName := attributeMap[(*directionPlace)].getName()
+			fmt.Printf("%s이 닫혀 있다. 이대로는 나아갈 수 없다.\n", doorName)
+			return
+		}
+
+		fmt.Printf("%s로 이동했다.\n", move.name)
+		
+		if (*directionPlace).isItem() {
+			itemName := attributeMap[(*directionPlace)].getName()
+			fmt.Printf("%s가 떨어져 있다. 어딘가에 사용할 수 있을 것 같다. 챙겨놓도록 하자.\n", itemName)
 			inventory := &playInfo.inventory
-			*inventory = append(*inventory, directionPlace)
-			// fmt.Println(playInfo.inventory) // debug
-			// updatePlayerPlace(tempPlaceCoords, tempPlace)
-			// return
+			*inventory = append(*inventory, (*directionPlace))
 		}
 
 		// 현재 위치 업데이트
-		updatePlayerPlace(tempPlaceCoords, tempPlace)
+		updatePlayerPlace(directionCoords, directionPlace)
 	}
 }
 
 func updatePlayerPlace(tempPlaceCoords Coords, tempPlace *Code) {
 	currentPlace := getPlaceByCoords(playInfo.currentCoords)
-	*currentPlace = codeFloor
-
 	playInfo.currentCoords = tempPlaceCoords
+
+	*currentPlace = codeFloor
 	*tempPlace = codePlayer
 
 	setPlayInfo(playInfo.currentCoords)
 }
 
-func EndGame() bool {
-	if playInfo.currentCoords == playInfo.goalCoords {
-		fmt.Println()
-		fmt.Println("1", playInfo.currentCoords)
-		fmt.Print("2", playInfo.goalCoords)
-		return true
+func checkInventory(item Code) bool {
+	for _, haveItem := range playInfo.inventory {
+		if item == haveItem {
+			return true
+		}
 	}
-
 	return false
 }
 
-//
-
-/* func AttributeNilCheck(attribute Attribute) bool {
-	return len(attribute.commands) == 0 && attribute.field == 0 && attribute.mark == ""
-} */
-
-/* func GetName(attribute int) (name string) {
-	switch attribute {
-	case -1:
-		name = "start"
-	case 0:
-		name = "floor"
-	case 1:
-		name = "blank"
-	case 10:
-		name = "closeDoor"
-	case 20:
-		name = "woodDoor"
-	case 30:
-		name = "glassDoor"
-	case 100:
-		name = "key"
-	case 200:
-		name = "hammer"
-	case 300:
-		name = "open"
+func actCheck(act []Acting, doorCode Code, ifDoor *Code, ifDoorIsOpen bool) bool {
+	if act != nil {
+		for _, acting := range act {
+			if acting.direction == doorCode {
+				return true
+			}
+		}
 	}
 
-	return name
-} */
-
-/* func GetField(attribute int) (field string) {
-	switch attribute {
-	case codeStart:
-		field = "[1]"
-	case codeFloor:
-		field = "[ ]"
-	case codeBlank:
-		field = ""
-	case codeCloseDoor:
-		field = "|♠|"
-	case codeGlassDoor:
-		field = "|♣|"
-	case codeWoodDoor:
-		field = "|♥|"
-	case codeKey:
-		field = "[§]"
-	case codeHammer:
-		field = "[↔]"
-	case codeHand:
-		field = "[※]"
+	if ifDoorIsOpen {
+		fmt.Printf("%s은 이미 열려있다. 지나갈 수 있을 것 같다.\n", attributeMap[(*ifDoor)].getName())
 	}
 
-	return field
+	fmt.Printf("%s은 굳게 닫혀있다.\n", attributeMap[(*ifDoor)].getName())
+
+	return false
 }
-*/

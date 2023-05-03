@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 type Code int
 
 const door = 100
@@ -20,17 +18,17 @@ const (
 )
 
 const (
-	codeCloseDoor Code = (iota + 1) * door
+	codeGoalDoor Code = (iota + 1) * door
 	codeGlassDoor
 	codeWoodDoor
 )
 
 func (code Code) getDoorNumber() int {
-	return int(code / door)
+	return int(code) / door
 }
 
 func (code Code) getItemNumber() int {
-	return int(code / item)
+	return int(code) % door / item
 }
 
 func (code Code) isDoor() bool {
@@ -42,7 +40,7 @@ func (code Code) isDoor() bool {
 }
 
 func (code Code) isItem() bool {
-	if code.getItemNumber() > 0 {
+	if code.getDoorNumber() == 0 && code.getItemNumber() < 10 && code.getItemNumber() > 0 {
 		return true
 	}
 
@@ -50,7 +48,7 @@ func (code Code) isItem() bool {
 }
 
 func (code Code) isOpenDoor() bool {
-	if code.isDoor() && code.isItem() && code.getDoorNumber() == code.getItemNumber() {
+	if code.getDoorNumber() == code.getItemNumber() && code.isDoor() {
 		return true
 	}
 	return false
@@ -59,10 +57,7 @@ func (code Code) isOpenDoor() bool {
 func getAroundDoorCoords( /* codes ...*Code */ ) *Code {
 	aroundPlace := []*Code{playInfo.upPlace, playInfo.downPlace, playInfo.rightPlace, playInfo.leftPlace}
 	for _, place := range aroundPlace {
-		fmt.Println("test : ", place)
-		fmt.Println("*test : ", *place)
-		fmt.Println()
-		if (*place).isDoor() {
+		if place != nil && (*place).isDoor() {
 			return place
 		}
 	}

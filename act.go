@@ -3,6 +3,7 @@ package main
 type Act string
 
 type Acting struct {
+	name      string
 	direction Code
 	coords    Coords
 }
@@ -10,15 +11,15 @@ type Acting struct {
 var actMap map[Act][]Acting
 
 func initActMap() {
-	upCoords,downCoords,rightCoords,leftCoords := getAroundCoords(Coords{})
-	up := Acting{direction: codeFloor, coords: upCoords}
-	down := Acting{direction: codeFloor, coords: downCoords}
-	right := Acting{direction: codeFloor, coords: rightCoords}
-	left := Acting{direction: codeFloor, coords: leftCoords}
+	upCoords, downCoords, rightCoords, leftCoords := getAroundCoords(Coords{})
+	up := Acting{name: "위", direction: codeFloor, coords: upCoords}
+	down := Acting{name: "아래", direction: codeFloor, coords: downCoords}
+	right := Acting{name: "오른쪽", direction: codeFloor, coords: rightCoords}
+	left := Acting{name: "왼쪽", direction: codeFloor, coords: leftCoords}
 
 	open := Acting{direction: codeWoodDoor}
 	breakOpen := Acting{direction: codeGlassDoor}
-	keyOpen := Acting{direction: codeCloseDoor}
+	keyOpen := Acting{direction: codeGoalDoor}
 
 	actMap = map[Act][]Acting{
 		"위": {up},
@@ -42,9 +43,9 @@ func initActMap() {
 		"연": {open, breakOpen, keyOpen},
 		"열": {open, breakOpen, keyOpen},
 
-		"부수" : {breakOpen},
-		"부순" : {breakOpen},
-		"깨" : {breakOpen},
-		"깬" : {breakOpen},
+		"부수": {breakOpen},
+		"부순": {breakOpen},
+		"깨":  {breakOpen},
+		"깬":  {breakOpen},
 	}
 }

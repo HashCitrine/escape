@@ -14,33 +14,24 @@ type PlayInfo struct {
 
 var playInfo PlayInfo
 
-
 func initPlayInfo(currentCoords Coords, goalCoords Coords) {
-	upCoords,downCoords,rightCoords,leftCoords := getAroundCoords(currentCoords)
+	// upCoords,downCoords,rightCoords,leftCoords := getAroundCoords(currentCoords)
 
 	playInfo = PlayInfo{
 		goalCoords:    goalCoords,
 		currentCoords: currentCoords,
-
-		upPlace: getPlaceByCoords(upCoords),
-		downPlace: getPlaceByCoords(downCoords),
-		rightPlace: getPlaceByCoords(rightCoords),
-		leftPlace: getPlaceByCoords(leftCoords),
 		inventory : []Code{codeHand},
 	}
+
+	setPlayInfo(currentCoords)
 	return
 }
 
-func setPlayInfo(coords Coords/* , item Code */) {
+func setPlayInfo(coords Coords) {
 	upCoords,downCoords,rightCoords,leftCoords := getAroundCoords(coords)
 
 	playInfo.upPlace = getPlaceByCoords(upCoords)
 	playInfo.downPlace = getPlaceByCoords(downCoords)
 	playInfo.rightPlace = getPlaceByCoords(rightCoords)
 	playInfo.leftPlace = getPlaceByCoords(leftCoords)
-
-	/* if(item.isItem()) {
-		inventory := &playInfo.inventory
-		*inventory = append(*inventory, item)
-	} */
 }
