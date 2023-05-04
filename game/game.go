@@ -64,10 +64,10 @@ func Script() {
 		return
 	}
 
-	aroundDoor := playInfo.getAroundDoorCoords()
+	aroundDoor, doorSideDirection := playInfo.getAroundDoorCoords()
 	if aroundDoor != nil {
 		doorName := attributeMap[(*aroundDoor)].getName()
-		fmt.Printf("%s이 보인다.", doorName)
+		fmt.Printf("(%s에 %s이 있습니다.)", doorSideDirection, doorName)
 		fmt.Println()
 		fmt.Println()
 	}

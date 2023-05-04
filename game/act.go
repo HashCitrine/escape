@@ -77,7 +77,7 @@ func (move Acting) actMove() {
 }
 
 func actByAttribute(door Code, item Code, acts []Act) {
-	ifDoor := playInfo.getAroundDoorCoords()
+	ifDoor, _ := playInfo.getAroundDoorCoords()
 	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpenDoor()
 	if door > 0 && !checkActToDoor(acts, door, ifDoor, ifDoorIsOpen) {
 		return
@@ -99,7 +99,7 @@ func actByAttribute(door Code, item Code, acts []Act) {
 		}
 
 		openingDoor := door + item
-		aroundDoor := playInfo.getAroundDoorCoords()
+		aroundDoor, _ := playInfo.getAroundDoorCoords()
 
 		if *aroundDoor == door && openingDoor.isOpenDoor() {
 			fmt.Printf("%s(으)로 %s을 열었다. 이제 지나갈 수 있다.\n", attributeMap[item].getName(), attributeMap[door].getName())

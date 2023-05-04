@@ -33,13 +33,24 @@ func updatePlayerPlace(tempPlaceCoords Coords, tempPlace *Code) {
 	setPlayInfo(playInfo.currentCoords)
 }
 
-func (platInfo PlayInfo) getAroundDoorCoords() *Code {
+func (platInfo PlayInfo) getAroundDoorCoords() (*Code, string) {
 	aroundPlace := []*Code{playInfo.upPlace, playInfo.downPlace, playInfo.rightPlace, playInfo.leftPlace}
-	for _, place := range aroundPlace {
+	for i, place := range aroundPlace {
 		if place != nil && (*place).isDoor() {
-			return place
+			return place, getDoorSideWayByIndex(i)
 		}
 	}
 
-	return nil
+	return nil, ""
+}
+
+func getDoorSideWayByIndex(index int) string {
+	switch index {
+	case 0 : return actMap[upAct].name
+	case 1 : return actMap[downAct].name
+	case 2 : return actMap[rightAct].name
+	case 3 : return actMap[leftAct].name
+	}
+
+	return ""
 }
