@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"bufio"
@@ -14,6 +14,7 @@ func consoleClear() {
 }
 
 func PlayGame() {
+	initGame()
 	consoleClear()
 	for {
 		DrawMap()
@@ -33,8 +34,8 @@ func PlayGame() {
 }
 
 func DrawMap() {
-	for i := 0; i < len(fieldArr); i++ {
-		var tempArr = fieldArr[i]
+	for i := 0; i < len(fieldArray); i++ {
+		var tempArr = fieldArray[i]
 
 		if i > 0 {
 			fmt.Println("")

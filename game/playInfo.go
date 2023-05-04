@@ -1,4 +1,6 @@
-package main
+package game
+
+import . "escape/game/util"
 
 type PlayInfo struct {
 	goalCoords    Coords
@@ -12,21 +14,8 @@ type PlayInfo struct {
 	inventory []Code
 }
 
-var playInfo PlayInfo
-
-func initPlayInfo(currentCoords Coords, goalCoords Coords) {
-	playInfo = PlayInfo{
-		goalCoords:    goalCoords,
-		currentCoords: currentCoords,
-		inventory : []Code{codeHand},
-	}
-
-	setPlayInfo(currentCoords)
-	return
-}
-
 func setPlayInfo(coords Coords) {
-	upCoords,downCoords,rightCoords,leftCoords := getAroundCoords(coords)
+	upCoords,downCoords,rightCoords,leftCoords := GetAroundCoords(coords)
 
 	playInfo.upPlace = getPlaceByCoords(upCoords)
 	playInfo.downPlace = getPlaceByCoords(downCoords)

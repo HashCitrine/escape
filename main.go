@@ -1,6 +1,7 @@
 package main
 
+import "escape/game"
+
 func main() {
-	initGame()
-	PlayGame()
+	game.PlayGame()
 }
