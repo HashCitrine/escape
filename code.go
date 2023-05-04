@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Code int
 
 const door = 100
@@ -54,13 +56,29 @@ func (code Code) isOpenDoor() bool {
 	return false
 }
 
-func getAroundDoorCoords( /* codes ...*Code */ ) *Code {
-	aroundPlace := []*Code{playInfo.upPlace, playInfo.downPlace, playInfo.rightPlace, playInfo.leftPlace}
-	for _, place := range aroundPlace {
-		if place != nil && (*place).isDoor() {
-			return place
+func checkInventory(item Code) bool {
+	for _, haveItem := range playInfo.inventory {
+		if item == haveItem {
+			return true
+		}
+	}
+	return false
+}
+
+func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bool) bool {
+	if actArray != nil {
+		for _, act := range actArray {
+			if act.getActing().direction == doorCode {
+				return true
+			}
 		}
 	}
 
-	return nil
+	if ifDoorIsOpen {
+		fmt.Printf("%s은 이미 열려있다. 지나갈 수 있을 것 같다.\n", attributeMap[(*ifDoor)].getName())
+	}
+
+	fmt.Printf("%s은 굳게 닫혀있다.\n", attributeMap[(*ifDoor)].getName())
+
+	return false
 }

@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Attribute struct {
 	commands []string
 	mark     string
@@ -26,18 +28,18 @@ func initAttributeMap() {
 	GetPlace(5, 0), GetPlace(5, 1), GetPlace(5, 2), GetPlace(5, 3), GetPlace(5, 4), GetPlace(5, 6), GetPlace(5, 7)) */
 
 	// Door
-	goalDoor := getAttribute(getStringArray("닫힌문"), "&", getPlace(0, 7))
-	glassDoor := getAttribute(getStringArray("유리문"), "=", getPlace(2, 2))
-	woodDoor := getAttribute(getStringArray("나무문"), "◐", getPlace(1, 4))
+	goalDoor := getAttribute(getStringArray("회색문", "회색"), "&", getPlace(0, 7))
+	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘",), "=", getPlace(2, 2))
+	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "◐", getPlace(1, 4))
 
 	// Item
-	key := getAttribute(getStringArray("열쇠"), "K", getPlace(5, 5))
-	hammer := getAttribute(getStringArray("망치"), "H", getPlace(2, 0))
+	key := getAttribute(getStringArray("열쇠", "키"), "K", getPlace(5, 5))
+	hammer := getAttribute(getStringArray("망치", "해머", "오함마"), "H", getPlace(2, 0))
 	hand := getAttribute(getStringArray("손"), "", nil)
 
-	openGoalDoor := getAttribute(getStringArray("닫힌문"), "%", nil)
-	openGlassDoor := getAttribute(getStringArray("유리문"), "≠", nil)
-	openWoodDoor := getAttribute(getStringArray("나무문"), "○", nil)
+	openGoalDoor := getAttribute(goalDoor.commands, "%", nil)
+	openGlassDoor := getAttribute(glassDoor.commands, "≠", nil)
+	openWoodDoor := getAttribute(woodDoor.commands, "○", nil)
 
 	attributeMap = map[Code]Attribute{
 		codePlayer: start,
@@ -59,6 +61,15 @@ func initAttributeMap() {
 
 	setAttributeToField()
 }
+
+func getMark(mark interface{}) string {
+	return fmt.Sprintf("[%v]", mark)
+}
+
+func getStringArray(stringArray ...string) []string {
+	return stringArray
+}
+
 
 func getAttribute(commands []string, mark string, place ...*Code) Attribute {
 	if mark != "" {

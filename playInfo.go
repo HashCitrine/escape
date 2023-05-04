@@ -15,8 +15,6 @@ type PlayInfo struct {
 var playInfo PlayInfo
 
 func initPlayInfo(currentCoords Coords, goalCoords Coords) {
-	// upCoords,downCoords,rightCoords,leftCoords := getAroundCoords(currentCoords)
-
 	playInfo = PlayInfo{
 		goalCoords:    goalCoords,
 		currentCoords: currentCoords,
@@ -34,4 +32,25 @@ func setPlayInfo(coords Coords) {
 	playInfo.downPlace = getPlaceByCoords(downCoords)
 	playInfo.rightPlace = getPlaceByCoords(rightCoords)
 	playInfo.leftPlace = getPlaceByCoords(leftCoords)
+}
+
+func updatePlayerPlace(tempPlaceCoords Coords, tempPlace *Code) {
+	currentPlace := getPlaceByCoords(playInfo.currentCoords)
+	playInfo.currentCoords = tempPlaceCoords
+
+	*currentPlace = codeFloor
+	*tempPlace = codePlayer
+
+	setPlayInfo(playInfo.currentCoords)
+}
+
+func (platInfo PlayInfo) getAroundDoorCoords() *Code {
+	aroundPlace := []*Code{playInfo.upPlace, playInfo.downPlace, playInfo.rightPlace, playInfo.leftPlace}
+	for _, place := range aroundPlace {
+		if place != nil && (*place).isDoor() {
+			return place
+		}
+	}
+
+	return nil
 }
