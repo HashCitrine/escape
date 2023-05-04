@@ -1,9 +1,5 @@
 package game
 
-import (
-	. "escape/game/util"
-)
-
 var fieldArray [][]Code
 
 var attributeMap map[Code]Attribute
@@ -13,7 +9,7 @@ var actCommandMap map[ActCommand][]Act
 
 var playInfo PlayInfo
 
-func initGame() {
+func init() {
 	initField()
 	initAttributeMap()
 	initActMap()
@@ -33,13 +29,13 @@ func initField() {
 
 func initAttributeMap() {
 	// Structor
-	start := getAttribute(getStringArray("시작 지점"), "1", getPlace(4, 1))
-	floor := getAttribute(getStringArray("복도"), " ",
+	start := getAttribute(getStringArray("시작 지점"), "🐈", getPlace(4, 1))
+	floor := getAttribute(getStringArray("복도"), "⬜",
 		getPlace(0, 4), getPlace(0, 5), getPlace(0, 6),
 		getPlace(2, 1), getPlace(2, 3), getPlace(2, 4),
 		getPlace(3, 1), getPlace(3, 4),
 		getPlace(4, 4), getPlace(4, 5))
-	blank := getAttribute(getStringArray("공백"), "", nil)
+	blank := getAttribute(getStringArray("공백"), "⬛", nil)
 	/* blank := GetCommon(GetStringArray("공백"), "",
 	GetPlace(0, 0), GetPlace(0, 1), GetPlace(0, 2), GetPlace(0, 3),
 	GetPlace(1, 0), GetPlace(1, 1), GetPlace(1, 2), GetPlace(1, 3), GetPlace(1, 5), GetPlace(1, 6), GetPlace(1, 7),
@@ -49,13 +45,13 @@ func initAttributeMap() {
 	GetPlace(5, 0), GetPlace(5, 1), GetPlace(5, 2), GetPlace(5, 3), GetPlace(5, 4), GetPlace(5, 6), GetPlace(5, 7)) */
 
 	// Door
-	goalDoor := getAttribute(getStringArray("회색문", "회색"), "&", getPlace(0, 7))
-	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "=", getPlace(2, 2))
-	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "◐", getPlace(1, 4))
+	goalDoor := getAttribute(getStringArray("회색문", "회색"), "🟪", getPlace(0, 7))
+	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "🟦", getPlace(2, 2))
+	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "🟫", getPlace(1, 4))
 
 	// Item
-	key := getAttribute(getStringArray("열쇠", "키"), "K", getPlace(5, 5))
-	hammer := getAttribute(getStringArray("망치", "해머", "오함마"), "H", getPlace(2, 0))
+	key := getAttribute(getStringArray("열쇠", "키"), "🗝️", getPlace(5, 5))
+	hammer := getAttribute(getStringArray("망치", "해머", "함마"), "🔨", getPlace(2, 0))
 	hand := getAttribute(getStringArray("손"), "", nil)
 
 	openGoalDoor := getAttribute(goalDoor.commands, "%", nil)

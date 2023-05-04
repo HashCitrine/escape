@@ -1,9 +1,6 @@
 package game
 
-import (
-	"fmt"
-	. "escape/game/util"
-)
+import "fmt"
 
 type Act string
 type ActCommand string

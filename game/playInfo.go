@@ -1,7 +1,5 @@
 package game
 
-import . "escape/game/util"
-
 type PlayInfo struct {
 	goalCoords    Coords
 	currentCoords Coords
@@ -15,7 +13,7 @@ type PlayInfo struct {
 }
 
 func setPlayInfo(coords Coords) {
-	upCoords,downCoords,rightCoords,leftCoords := GetAroundCoords(coords)
+	upCoords, downCoords, rightCoords, leftCoords := GetAroundCoords(coords)
 
 	playInfo.upPlace = getPlaceByCoords(upCoords)
 	playInfo.downPlace = getPlaceByCoords(downCoords)
@@ -46,10 +44,14 @@ func (platInfo PlayInfo) getAroundDoorCoords() (*Code, string) {
 
 func getDoorSideWayByIndex(index int) string {
 	switch index {
-	case 0 : return actMap[upAct].name
-	case 1 : return actMap[downAct].name
-	case 2 : return actMap[rightAct].name
-	case 3 : return actMap[leftAct].name
+	case 0:
+		return actMap[upAct].name
+	case 1:
+		return actMap[downAct].name
+	case 2:
+		return actMap[rightAct].name
+	case 3:
+		return actMap[leftAct].name
 	}
 
 	return ""

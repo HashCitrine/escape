@@ -14,7 +14,7 @@ func consoleClear() {
 }
 
 func PlayGame() {
-	initGame()
+	// initGame()
 	consoleClear()
 	for {
 		DrawMap()
@@ -42,10 +42,10 @@ func DrawMap() {
 		}
 		for j := 0; j < len(tempArr); j++ {
 			if j > 0 {
-				fmt.Print("\t")
+				// fmt.Print("\t")
 			}
 
-			fmt.Print(attributeMap[tempArr[j]].mark)
+			fmt.Print(attributeMap[tempArr[j]].icon)
 		}
 	}
 }
