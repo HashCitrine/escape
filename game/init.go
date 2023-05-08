@@ -9,13 +9,6 @@ var actCommandMap map[ActCommand][]Act
 
 var playInfo PlayInfo
 
-func init() {
-	initField()
-	initAttributeMap()
-	initActMap()
-	initPlayInfo(Coords{Y: 4, X: 1}, Coords{Y: 0, X: 7})
-}
-
 func initField() {
 	fieldArray = make([][]Code, 6)
 

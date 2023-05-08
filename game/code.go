@@ -1,7 +1,5 @@
 package game
 
-import "fmt"
-
 type Code int
 
 const door = 100
@@ -75,10 +73,14 @@ func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bo
 	}
 
 	if ifDoorIsOpen {
-		fmt.Printf("%s은 이미 열려있다. 지나갈 수 있을 것 같다.\n", attributeMap[(*ifDoor)].getName())
+		alreadyOpenDoor.print((*ifDoor).getName())
 	}
 
-	fmt.Printf("%s은 굳게 닫혀있다.\n", attributeMap[(*ifDoor)].getName())
+	doNotActToDoor.print((*ifDoor).getName())
 
 	return false
+}
+
+func (code Code) getName() string {
+	return attributeMap[code].getName()
 }

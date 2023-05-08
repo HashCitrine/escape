@@ -1,5 +1,7 @@
 package game
 
+import "fmt"
+
 type PlayInfo struct {
 	goalCoords    Coords
 	currentCoords Coords
@@ -55,4 +57,29 @@ func getDoorSideWayByIndex(index int) string {
 	}
 
 	return ""
+}
+
+func printInventory() {
+	inventorys := playInfo.inventory
+
+	if len(inventorys) < 2 {
+		return
+	}
+
+	fmt.Print("소지품 : ")
+
+	for i, inventory := range inventorys {
+		if i > 1 {
+			fmt.Print(", ")
+		}
+
+		if inventory == codeHand {
+			continue
+		}
+
+		fmt.Print(attributeMap[inventory].getName())
+	}
+
+	fmt.Println()
+	fmt.Println()
 }

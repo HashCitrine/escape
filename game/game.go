@@ -9,16 +9,19 @@ import (
 
 var endGame = false
 
-func consoleClear() {
-	fmt.Print("\033[H\033[2J")
+func init() {
+	initField()
+	initAttributeMap()
+	initActMap()
+	initPlayInfo(Coords{Y: 4, X: 1}, Coords{Y: 0, X: 7})
 }
 
 func PlayGame() {
 	// initGame()
-	consoleClear()
+	clearConsole.print()
 	for {
 		DrawMap()
-		Script()
+		PrintScript()
 
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
@@ -27,7 +30,7 @@ func PlayGame() {
 		if endGame {
 			break
 		}
-		consoleClear()
+		clearConsole.print()
 
 		Action(chose)
 	}
@@ -50,52 +53,28 @@ func DrawMap() {
 	}
 }
 
-func Script() {
+func PrintScript() {
 	fmt.Println()
 	fmt.Println()
 	currentPlace := getPlaceByCoords(playInfo.currentCoords)
 	if currentPlace == attributeMap[codePlayer].place[0] {
-		fmt.Println("(당신은 미로의 함정에 빠졌습니다. 이곳을 빠져나가야 합니다.)")
-		fmt.Println()
+		startScript.print()
 	}
 
 	if endGame {
-		fmt.Println("(밝은 빛이 보입니다. 당신은 탈출에 성공했습니다.)")
+		endScript.print()
 		return
 	}
 
 	aroundDoor, doorSideDirection := playInfo.getAroundDoorCoords()
 	if aroundDoor != nil {
-		doorName := attributeMap[(*aroundDoor)].getName()
-		fmt.Printf("(%s에 %s이 있습니다.)", doorSideDirection, doorName)
+		doorName := (*aroundDoor).getName()
+		lookAtTheDoorscript.print(doorSideDirection, doorName)
 		fmt.Println()
-		fmt.Println()
 	}
 
-	fmt.Print("소지품 : ")
-	var inventoryList string
-	for _, item := range playInfo.inventory {
-		if len(inventoryList) > 0 {
-			inventoryList += ", "
-		}
-
-		if item == codeHand {
-			continue
-		}
-
-		inventoryList += attributeMap[item].getName()
-	}
-
-	if len(inventoryList) == 0 {
-		inventoryList += "없음"
-	}
-
-	fmt.Println(inventoryList)
-
-	fmt.Println()
-	fmt.Println()
-
-	fmt.Println("(어떤 행동을 하시겠습니까?)")
+	printInventory()
+	questionScript.print()
 }
 
 func Action(chose string) {
@@ -107,7 +86,7 @@ func Action(chose string) {
 	for k, actArray := range actCommandMap {
 		if strings.Contains(chose, string(k)) {
 			if acts != nil {
-				fmt.Println("욕심 부리지 말자. 차근차근 하나씩 행동해야 한다.")
+				doNotTooManyActScript.print()
 				return
 			}
 
