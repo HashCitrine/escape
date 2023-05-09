@@ -1,40 +1,34 @@
 package game
 
-import (
-	"fmt"
-	. "escape/game/util"
-)
-
-type Act string
+type ActName string
 type ActCommand string
 
 type Acting struct {
-	name      string
-	direction Code
-	coords    Coords
+	name       string
+	targetCode Code
+	coords     Coords
 }
 
 const (
-	upAct        Act = "up"
-	downAct      Act = "down"
-	rightAct     Act = "right"
-	leftAct      Act = "left"
-	openAct      Act = "open"
-	breakOpenAct Act = "breakOpen"
-	keyOpenAct   Act = "keyOpen"
+	upAct        ActName = "up"
+	downAct      ActName = "down"
+	rightAct     ActName = "right"
+	leftAct      ActName = "left"
+	openAct      ActName = "open"
+	breakOpenAct ActName = "breakOpen"
+	keyOpenAct   ActName = "keyOpen"
+	
 )
 
-func (act Act) getActing() Acting {
+func (act ActName) getActing() Acting {
 	return actMap[act]
 }
 
 func (move Acting) actMove() {
-	// var move = act[0]
-	if move.direction == codeFloor {
+	if move.targetCode == codeFloor {
 		directionCoords := NewCoords(playInfo.currentCoords, move.coords)
 		if checkOutFieldByCoords(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
-			// directionPlace = *tempPlace
-			fmt.Println("막힌 길이다. 다시 생각해보자.")
+			blankScript.print()
 			return
 		}
 
@@ -46,8 +40,9 @@ func (move Acting) actMove() {
 				updatePlayerPlace(directionCoords, directionPlace)
 				return
 			}
-			doorName := attributeMap[Code((*directionPlace).getDoorNumber())*door].getName()
-			fmt.Printf("%s을 지나왔다.\n", doorName)
+			// doorName := attributeMap[Code((*directionPlace).getDoorNumber())*door].getName()
+			doorName := (*directionPlace).getName()
+			passDoorScript.print(doorName)
 
 			directionCoords = NewCoords(directionCoords, move.coords)
 			directionPlace = getPlaceByCoords(directionCoords)
@@ -58,15 +53,15 @@ func (move Acting) actMove() {
 
 		if (*directionPlace).isDoor() {
 			doorName := attributeMap[(*directionPlace)].getName()
-			fmt.Printf("%s이 닫혀 있다. 이대로는 나아갈 수 없다.\n", doorName)
+			closeDoorScript.print(doorName)
 			return
 		}
 
-		fmt.Printf("%s로 이동했다.\n", move.name)
+		moveScript.print(move.name)
 
 		if (*directionPlace).isItem() {
 			itemName := attributeMap[(*directionPlace)].getName()
-			fmt.Printf("%s가 떨어져 있다. 어딘가에 사용할 수 있을 것 같다. 챙겨놓도록 하자.\n", itemName)
+			findItmeScript.print(itemName)
 			inventory := &playInfo.inventory
 			*inventory = append(*inventory, (*directionPlace))
 		}
@@ -76,7 +71,7 @@ func (move Acting) actMove() {
 	}
 }
 
-func actByAttribute(door Code, item Code, acts []Act) {
+func actByAttribute(door Code, item Code, acts []ActName) {
 	ifDoor, _ := playInfo.getAroundDoorCoords()
 	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpenDoor()
 	if door > 0 && !checkActToDoor(acts, door, ifDoor, ifDoorIsOpen) {
@@ -84,7 +79,7 @@ func actByAttribute(door Code, item Code, acts []Act) {
 	}
 
 	if item > 0 && !checkInventory(item) {
-		fmt.Printf("%s를 가지고 있지 않다. 다른 방법을 찾아보자.\n", attributeMap[item].getName())
+		notHaveItemScript.print(item.getName())
 		return
 	}
 
@@ -94,7 +89,7 @@ func actByAttribute(door Code, item Code, acts []Act) {
 
 	if door > 0 && item > 0 {
 		if ifDoor != nil && ifDoorIsOpen {
-			fmt.Printf("%s은 이미 열려있다. 지나갈 수 있을 것 같다.\n", attributeMap[(*ifDoor)].getName())
+			alreadyOpenDoor.print((*ifDoor).getName())
 			return
 		}
 
@@ -102,10 +97,10 @@ func actByAttribute(door Code, item Code, acts []Act) {
 		aroundDoor, _ := playInfo.getAroundDoorCoords()
 
 		if *aroundDoor == door && openingDoor.isOpenDoor() {
-			fmt.Printf("%s(으)로 %s을 열었다. 이제 지나갈 수 있다.\n", attributeMap[item].getName(), attributeMap[door].getName())
+			useItemToDoor.print(item.getName(), door.getName())
 			*aroundDoor = openingDoor
 		} else {
-			fmt.Printf("%s(으)로는 %s을 열 수 없다. 다른 방법을 찾아보자.\n", attributeMap[item].getName(), attributeMap[door].getName())
+			doNotUseItemToDoor.print(item.getName(), door.getName())
 		}
 	}
 }

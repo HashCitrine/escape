@@ -1,4 +1,4 @@
-package util
+package game
 
 type Coords struct {
 	Y int

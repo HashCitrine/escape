@@ -4,25 +4,25 @@ import "fmt"
 
 type Attribute struct {
 	commands []string
-	mark     string
+	icon     string
 	place    []*Code
 }
 
-func getMark(mark interface{}) string {
-	return fmt.Sprintf("[%v]", mark)
+func getIcon(icon interface{}) string {
+	return fmt.Sprintf("[%v]", icon)
 }
 
 func getStringArray(stringArray ...string) []string {
 	return stringArray
 }
 
-func getAttribute(commands []string, mark string, place ...*Code) Attribute {
-	if mark != "" {
-		mark = getMark(mark)
+func getAttribute(commands []string, icon string, place ...*Code) Attribute {
+	if icon != "" {
+		// icon = getIcon(icon)
 	}
 	return Attribute{
 		commands,
-		mark,
+		icon,
 		place,
 	}
 }
@@ -41,3 +41,4 @@ func setAttributeToField() {
 func (attribute Attribute) getName() string {
 	return attribute.commands[0]
 }
+

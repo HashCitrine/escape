@@ -1,6 +1,6 @@
 package game
 
-import . "escape/game/util"
+import "fmt"
 
 type PlayInfo struct {
 	goalCoords    Coords
@@ -15,7 +15,7 @@ type PlayInfo struct {
 }
 
 func setPlayInfo(coords Coords) {
-	upCoords,downCoords,rightCoords,leftCoords := GetAroundCoords(coords)
+	upCoords, downCoords, rightCoords, leftCoords := GetAroundCoords(coords)
 
 	playInfo.upPlace = getPlaceByCoords(upCoords)
 	playInfo.downPlace = getPlaceByCoords(downCoords)
@@ -46,11 +46,40 @@ func (platInfo PlayInfo) getAroundDoorCoords() (*Code, string) {
 
 func getDoorSideWayByIndex(index int) string {
 	switch index {
-	case 0 : return actMap[upAct].name
-	case 1 : return actMap[downAct].name
-	case 2 : return actMap[rightAct].name
-	case 3 : return actMap[leftAct].name
+	case 0:
+		return actMap[upAct].name
+	case 1:
+		return actMap[downAct].name
+	case 2:
+		return actMap[rightAct].name
+	case 3:
+		return actMap[leftAct].name
 	}
 
 	return ""
+}
+
+func printInventory() {
+	inventorys := playInfo.inventory
+
+	if len(inventorys) < 2 {
+		return
+	}
+
+	fmt.Print("소지품 : ")
+
+	for i, inventory := range inventorys {
+		if i > 1 {
+			fmt.Print(", ")
+		}
+
+		if inventory == codeHand {
+			continue
+		}
+
+		fmt.Print(attributeMap[inventory].getName())
+	}
+
+	fmt.Println()
+	fmt.Println()
 }
