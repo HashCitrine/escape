@@ -1,31 +1,91 @@
 package game
 
-type ActName string
+type Act string
 type ActCommand string
 
 type Acting struct {
-	name       string
-	targetCode Code
-	coords     Coords
+	target Code
+	coords Coords
 }
 
+var actCommandMap map[ActCommand][]Act
+var actMap map[Act]Acting
+
 const (
-	upAct        ActName = "up"
-	downAct      ActName = "down"
-	rightAct     ActName = "right"
-	leftAct      ActName = "left"
-	openAct      ActName = "open"
-	breakOpenAct ActName = "breakOpen"
-	keyOpenAct   ActName = "keyOpen"
-	
+	upAct        Act = "위"
+	downAct      Act = "아래"
+	rightAct     Act = "오른쪽"
+	leftAct      Act = "왼쪽"
+	openAct      Act = "열기"
+	breakOpenAct Act = "부숴서열기"
+	keyOpenAct   Act = "열쇠열기"
 )
 
-func (act ActName) getActing() Acting {
+func initActMap() {
+	upCoords, downCoords, rightCoords, leftCoords := GetAroundCoords(Coords{})
+	up := Acting{target: codeFloor, coords: upCoords}
+	down := Acting{target: codeFloor, coords: downCoords}
+	right := Acting{target: codeFloor, coords: rightCoords}
+	left := Acting{target: codeFloor, coords: leftCoords}
+
+	open := Acting{target: codeWoodDoor}
+	breakOpen := Acting{target: codeGlassDoor}
+	keyOpen := Acting{target: codeGoalDoor}
+
+	actMap = map[Act]Acting{
+		upAct:        up,
+		downAct:      down,
+		rightAct:     right,
+		leftAct:      left,
+		openAct:      open,
+		breakOpenAct: breakOpen,
+		keyOpenAct:   keyOpen,
+		// getHammer :
+	}
+}
+
+func initActCommandMap() {
+	actCommandMap = map[ActCommand][]Act{
+		"위": {upAct},
+		"앞": {upAct},
+		"상": {upAct},
+		"북": {upAct},
+
+		"아래": {downAct},
+		"밑":  {downAct},
+		"하":  {downAct},
+		"남":  {downAct},
+
+		"오른": {rightAct},
+		"우":  {rightAct},
+		"동":  {rightAct},
+
+		"왼": {leftAct},
+		"좌": {leftAct},
+		"서": {leftAct},
+
+		"연":  {openAct, breakOpenAct, keyOpenAct},
+		"열":  {openAct, breakOpenAct, keyOpenAct},
+		"사용": {openAct, breakOpenAct, keyOpenAct},
+		"이용": {openAct, breakOpenAct, keyOpenAct},
+
+		"부수": {breakOpenAct},
+		"부순": {breakOpenAct},
+		"깨":  {breakOpenAct},
+		"깬":  {breakOpenAct},
+
+		// "줍": {getHammer, getKey},
+	}
+}
+
+func (act Act) getActing() Acting {
 	return actMap[act]
 }
 
-func (move Acting) actMove() {
-	if move.targetCode == codeFloor {
+func move(act []Act) {
+	actName := act[0]
+	move := actName.getActing()
+	if move.target == codeFloor {
 		directionCoords := NewCoords(playInfo.currentCoords, move.coords)
 		if checkOutFieldByCoords(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
 			blankScript.print()
@@ -57,7 +117,7 @@ func (move Acting) actMove() {
 			return
 		}
 
-		moveScript.print(move.name)
+		moveScript.print(actName)
 
 		if (*directionPlace).isItem() {
 			itemName := attributeMap[(*directionPlace)].getName()
@@ -71,7 +131,7 @@ func (move Acting) actMove() {
 	}
 }
 
-func actByAttribute(door Code, item Code, acts []ActName) {
+func actByAttribute(door Code, item Code, acts []Act) {
 	ifDoor, _ := playInfo.getAroundDoorCoords()
 	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpenDoor()
 	if door > 0 && !checkActToDoor(acts, door, ifDoor, ifDoorIsOpen) {

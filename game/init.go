@@ -4,8 +4,7 @@ var fieldArray [][]Code
 
 var attributeMap map[Code]Attribute
 
-var actMap map[ActName]Acting
-var actCommandMap map[ActCommand][]ActName
+
 
 var playInfo PlayInfo
 
@@ -65,63 +64,7 @@ func initAttributeMap() {
 	setAttributeToField()
 }
 
-func initActMap() {
-	upCoords, downCoords, rightCoords, leftCoords := GetAroundCoords(Coords{})
-	up := Acting{name: "위", targetCode: codeFloor, coords: upCoords}
-	down := Acting{name: "아래", targetCode: codeFloor, coords: downCoords}
-	right := Acting{name: "오른쪽", targetCode: codeFloor, coords: rightCoords}
-	left := Acting{name: "왼쪽", targetCode: codeFloor, coords: leftCoords}
 
-	open := Acting{targetCode: codeWoodDoor}
-	breakOpen := Acting{targetCode: codeGlassDoor}
-	keyOpen := Acting{targetCode: codeGoalDoor}
-
-	// getHammer := Acting{targetCode: codeHammer}
-	// getKey := Acting{targetCode: codeKey}
-
-	actMap = map[ActName]Acting{
-		upAct:        up,
-		downAct:      down,
-		rightAct:     right,
-		leftAct:      left,
-		openAct:      open,
-		breakOpenAct: breakOpen,
-		keyOpenAct:   keyOpen,
-		// getHammer : 
-	}
-
-	actCommandMap = map[ActCommand][]ActName{
-		"위": {upAct},
-		"앞": {upAct},
-		"상": {upAct},
-		"북": {upAct},
-
-		"아래": {downAct},
-		"밑":  {downAct},
-		"하":  {downAct},
-		"남":  {downAct},
-
-		"오른": {rightAct},
-		"우":  {rightAct},
-		"동":  {rightAct},
-
-		"왼": {leftAct},
-		"좌": {leftAct},
-		"서": {leftAct},
-
-		"연":  {openAct, breakOpenAct, keyOpenAct},
-		"열":  {openAct, breakOpenAct, keyOpenAct},
-		"사용": {openAct, breakOpenAct, keyOpenAct},
-		"이용": {openAct, breakOpenAct, keyOpenAct},
-
-		"부수": {breakOpenAct},
-		"부순": {breakOpenAct},
-		"깨":  {breakOpenAct},
-		"깬":  {breakOpenAct},
-
-		// "줍": {getHammer, getKey},
-	}
-}
 
 func initPlayInfo(currentCoords Coords, goalCoords Coords) {
 	playInfo = PlayInfo{

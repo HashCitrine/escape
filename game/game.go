@@ -13,6 +13,7 @@ func init() {
 	initField()
 	initAttributeMap()
 	initActMap()
+	initActCommandMap()
 	initPlayInfo(Coords{Y: 4, X: 1}, Coords{Y: 0, X: 7})
 }
 
@@ -81,7 +82,7 @@ func Action(chose string) {
 	// var act Code
 	var door Code
 	var item Code
-	var acts []ActName = nil
+	var acts []Act = nil
 
 	for k, actArray := range actCommandMap {
 		if strings.Contains(chose, string(k)) {
@@ -95,7 +96,7 @@ func Action(chose string) {
 	}
 
 	if acts != nil {
-		acts[0].getActing().actMove()
+		move(acts)
 	}
 
 	// 특정 요소를 지칭하고 명령한 경우
