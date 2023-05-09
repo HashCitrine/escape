@@ -3,8 +3,8 @@ package game
 import "fmt"
 
 type Script string
-type Narration string
-type Fnarration string
+type Narration Script
+type Fnarration Script
 
 const (
 	clearConsole          Script = "\033[H\033[2J"
@@ -19,16 +19,16 @@ const (
 )
 
 const (
-	lookAtTheDoorscript Fnarration = "%s에 %s이 있습니다."
-	passDoorScript      Fnarration = "%s을 지나왔다.\n"
-	closeDoorScript     Fnarration = "%s이 닫혀 있다. 이대로는 나아갈 수 없다.\n"
-	moveScript          Fnarration = "%s로 이동했다.\n"
-	findItmeScript      Fnarration = "%s가 떨어져 있다. 어딘가에 사용할 수 있을 것 같다. 챙겨놓도록 하자.\n"
-	notHaveItemScript   Fnarration = "%s를 가지고 있지 않다. 다른 방법을 찾아보자.\n"
-	alreadyOpenDoor     Fnarration = "%s은 이미 열려있다. 지나갈 수 있을 것 같다.\n"
-	useItemToDoor       Fnarration = "%s(으)로 %s을 열었다. 이제 지나갈 수 있다.\n"
-	doNotUseItemToDoor  Fnarration = "%s(으)로는 %s을 열 수 없다. 다른 방법을 찾아보자.\n"
-	doNotActToDoor      Fnarration = "%s은 굳게 닫혀있다.\n"
+	lookAtTheDoorscript       Fnarration = "%s에 %s이 있습니다."
+	passDoorScript            Fnarration = "%s을 지나왔다.\n"
+	closeDoorScript           Fnarration = "%s이 닫혀 있다. 이대로는 나아갈 수 없다.\n"
+	moveScript                Fnarration = "%s로 이동했다.\n"
+	findItmeScript            Fnarration = "%s가 떨어져 있다. 어딘가에 사용할 수 있을 것 같다. 챙겨놓도록 하자.\n"
+	notHaveItemScript         Fnarration = "%s를 가지고 있지 않다. 다른 방법을 찾아보자.\n"
+	alreadyOpenDoorScript     Fnarration = "%s은 이미 열려있다. 지나갈 수 있을 것 같다.\n"
+	useItemToDoorScript       Fnarration = "%s(으)로 %s을 열었다. 이제 지나갈 수 있다.\n"
+	canNotUseItemToDoorScript Fnarration = "%s(으)로는 %s을 열 수 없다. 다른 방법을 찾아보자.\n"
+	doNotActToDoorScript      Fnarration = "%s은 굳게 닫혀있다.\n"
 )
 
 func print(script string) {

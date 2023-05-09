@@ -149,7 +149,7 @@ func actByAttribute(door Code, item Code, acts []Act) {
 
 	if door > 0 && item > 0 {
 		if ifDoor != nil && ifDoorIsOpen {
-			alreadyOpenDoor.print((*ifDoor).getName())
+			alreadyOpenDoorScript.print((*ifDoor).getName())
 			return
 		}
 
@@ -157,10 +157,10 @@ func actByAttribute(door Code, item Code, acts []Act) {
 		aroundDoor, _ := playInfo.getAroundDoorCoords()
 
 		if *aroundDoor == door && openingDoor.isOpenDoor() {
-			useItemToDoor.print(item.getName(), door.getName())
+			useItemToDoorScript.print(item.getName(), door.getName())
 			*aroundDoor = openingDoor
 		} else {
-			doNotUseItemToDoor.print(item.getName(), door.getName())
+			canNotUseItemToDoorScript.print(item.getName(), door.getName())
 		}
 	}
 }

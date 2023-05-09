@@ -73,10 +73,10 @@ func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bo
 	}
 
 	if ifDoorIsOpen {
-		alreadyOpenDoor.print((*ifDoor).getName())
+		alreadyOpenDoorScript.print((*ifDoor).getName())
 	}
 
-	doNotActToDoor.print((*ifDoor).getName())
+	doNotActToDoorScript.print((*ifDoor).getName())
 
 	return false
 }

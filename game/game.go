@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+var fieldArray [][]Code
+var playInfo PlayInfo
+
 var endGame = false
 
 func init() {
@@ -15,6 +18,28 @@ func init() {
 	initActMap()
 	initActCommandMap()
 	initPlayInfo(Coords{Y: 4, X: 1}, Coords{Y: 0, X: 7})
+}
+
+func initField() {
+	fieldArray = make([][]Code, 6)
+
+	for i := range fieldArray {
+		fieldArray[i] = make([]Code, 8)
+		for j := range fieldArray[i] {
+			fieldArray[i][j] = codeBlank
+		}
+	}
+}
+
+func initPlayInfo(currentCoords Coords, goalCoords Coords) {
+	playInfo = PlayInfo{
+		goalCoords:    goalCoords,
+		currentCoords: currentCoords,
+		inventory:     []Code{codeHand},
+	}
+
+	setPlayInfo(currentCoords)
+	return
 }
 
 func PlayGame() {
