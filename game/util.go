@@ -12,12 +12,12 @@ func getPlaceByCoords(coords Coords) *Code {
 		return nil
 	}
 
-	return &fieldArray[coords.Y][coords.X]
+	return &fieldArray[coords.y][coords.x]
 }
 
 func checkOutFieldByCoords(coords Coords) bool {
-	if coords.Y < 0 || coords.X < 0 ||
-		len(fieldArray) <= coords.Y || len(fieldArray[0]) <= coords.X {
+	if coords.y < 0 || coords.x < 0 ||
+		len(fieldArray) <= coords.y || len(fieldArray[0]) <= coords.x {
 		return true
 	}
 	return false

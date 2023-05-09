@@ -17,7 +17,7 @@ func init() {
 	initAttributeMap()
 	initActMap()
 	initActCommandMap()
-	initPlayInfo(Coords{Y: 4, X: 1}, Coords{Y: 0, X: 7})
+	initPlayInfo(Coords{y: 4, x: 1}, Coords{y: 0, x: 7})
 }
 
 func initField() {

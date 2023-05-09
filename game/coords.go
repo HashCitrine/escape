@@ -1,24 +1,24 @@
 package game
 
 type Coords struct {
-	Y int
-	X int
+	y int
+	x int
 }
 
-func GetAroundCoords(coords Coords) (upCoords Coords, downCoords Coords, rightCoords Coords, leftCoords Coords) {
+func getAroundCoords(coords Coords) (upCoords Coords, downCoords Coords, rightCoords Coords, leftCoords Coords) {
 	upCoords, downCoords, rightCoords, leftCoords = coords, coords, coords, coords
 
-	upCoords.Y = coords.Y - 1
-	downCoords.Y = coords.Y + 1
-	leftCoords.X = coords.X - 1
-	rightCoords.X = coords.X + 1
+	upCoords.y = coords.y - 1
+	downCoords.y = coords.y + 1
+	leftCoords.x = coords.x - 1
+	rightCoords.x = coords.x + 1
 
 	return
 }
 
-func NewCoords(currentCoords Coords, addCoords Coords) Coords {
-	currentCoords.X += addCoords.X
-	currentCoords.Y += addCoords.Y
+func newCoords(currentCoords Coords, addCoords Coords) Coords {
+	currentCoords.x += addCoords.x
+	currentCoords.y += addCoords.y
 
 	return currentCoords
 }

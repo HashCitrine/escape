@@ -15,7 +15,7 @@ type PlayInfo struct {
 }
 
 func setPlayInfo(coords Coords) {
-	upCoords, downCoords, rightCoords, leftCoords := GetAroundCoords(coords)
+	upCoords, downCoords, rightCoords, leftCoords := getAroundCoords(coords)
 
 	playInfo.upPlace = getPlaceByCoords(upCoords)
 	playInfo.downPlace = getPlaceByCoords(downCoords)

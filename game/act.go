@@ -22,7 +22,7 @@ const (
 )
 
 func initActMap() {
-	upCoords, downCoords, rightCoords, leftCoords := GetAroundCoords(Coords{})
+	upCoords, downCoords, rightCoords, leftCoords := getAroundCoords(Coords{})
 	up := Acting{target: codeFloor, coords: upCoords}
 	down := Acting{target: codeFloor, coords: downCoords}
 	right := Acting{target: codeFloor, coords: rightCoords}
@@ -86,7 +86,7 @@ func move(act []Act) {
 	actName := act[0]
 	move := actName.getActing()
 	if move.target == codeFloor {
-		directionCoords := NewCoords(playInfo.currentCoords, move.coords)
+		directionCoords := newCoords(playInfo.currentCoords, move.coords)
 		if checkOutFieldByCoords(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
 			blankScript.print()
 			return
@@ -104,7 +104,7 @@ func move(act []Act) {
 			doorName := (*directionPlace).getName()
 			passDoorScript.print(doorName)
 
-			directionCoords = NewCoords(directionCoords, move.coords)
+			directionCoords = newCoords(directionCoords, move.coords)
 			directionPlace = getPlaceByCoords(directionCoords)
 
 			updatePlayerPlace(directionCoords, directionPlace)
