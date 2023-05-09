@@ -4,8 +4,8 @@ var fieldArray [][]Code
 
 var attributeMap map[Code]Attribute
 
-var actMap map[Act]Acting
-var actCommandMap map[ActCommand][]Act
+var actMap map[ActName]Acting
+var actCommandMap map[ActCommand][]ActName
 
 var playInfo PlayInfo
 
@@ -29,13 +29,6 @@ func initAttributeMap() {
 		getPlace(3, 1), getPlace(3, 4),
 		getPlace(4, 4), getPlace(4, 5))
 	blank := getAttribute(getStringArray("공백"), "⬛", nil)
-	/* blank := GetCommon(GetStringArray("공백"), "",
-	GetPlace(0, 0), GetPlace(0, 1), GetPlace(0, 2), GetPlace(0, 3),
-	GetPlace(1, 0), GetPlace(1, 1), GetPlace(1, 2), GetPlace(1, 3), GetPlace(1, 5), GetPlace(1, 6), GetPlace(1, 7),
-	GetPlace(2, 5), GetPlace(2, 6), GetPlace(2, 7),
-	GetPlace(3, 0), GetPlace(3, 2), GetPlace(3, 3), GetPlace(3, 5), GetPlace(3, 6), GetPlace(3, 7),
-	GetPlace(4, 0), GetPlace(4, 2), GetPlace(4, 3), GetPlace(4, 6), GetPlace(4, 7),
-	GetPlace(5, 0), GetPlace(5, 1), GetPlace(5, 2), GetPlace(5, 3), GetPlace(5, 4), GetPlace(5, 6), GetPlace(5, 7)) */
 
 	// Door
 	goalDoor := getAttribute(getStringArray("회색문", "회색"), "🟪", getPlace(0, 7))
@@ -74,16 +67,19 @@ func initAttributeMap() {
 
 func initActMap() {
 	upCoords, downCoords, rightCoords, leftCoords := GetAroundCoords(Coords{})
-	up := Acting{name: "위", direction: codeFloor, coords: upCoords}
-	down := Acting{name: "아래", direction: codeFloor, coords: downCoords}
-	right := Acting{name: "오른쪽", direction: codeFloor, coords: rightCoords}
-	left := Acting{name: "왼쪽", direction: codeFloor, coords: leftCoords}
+	up := Acting{name: "위", targetCode: codeFloor, coords: upCoords}
+	down := Acting{name: "아래", targetCode: codeFloor, coords: downCoords}
+	right := Acting{name: "오른쪽", targetCode: codeFloor, coords: rightCoords}
+	left := Acting{name: "왼쪽", targetCode: codeFloor, coords: leftCoords}
 
-	open := Acting{direction: codeWoodDoor}
-	breakOpen := Acting{direction: codeGlassDoor}
-	keyOpen := Acting{direction: codeGoalDoor}
+	open := Acting{targetCode: codeWoodDoor}
+	breakOpen := Acting{targetCode: codeGlassDoor}
+	keyOpen := Acting{targetCode: codeGoalDoor}
 
-	actMap = map[Act]Acting{
+	// getHammer := Acting{targetCode: codeHammer}
+	// getKey := Acting{targetCode: codeKey}
+
+	actMap = map[ActName]Acting{
 		upAct:        up,
 		downAct:      down,
 		rightAct:     right,
@@ -91,9 +87,10 @@ func initActMap() {
 		openAct:      open,
 		breakOpenAct: breakOpen,
 		keyOpenAct:   keyOpen,
+		// getHammer : 
 	}
 
-	actCommandMap = map[ActCommand][]Act{
+	actCommandMap = map[ActCommand][]ActName{
 		"위": {upAct},
 		"앞": {upAct},
 		"상": {upAct},
@@ -121,6 +118,8 @@ func initActMap() {
 		"부순": {breakOpenAct},
 		"깨":  {breakOpenAct},
 		"깬":  {breakOpenAct},
+
+		// "줍": {getHammer, getKey},
 	}
 }
 

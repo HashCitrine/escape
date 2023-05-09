@@ -81,7 +81,7 @@ func Action(chose string) {
 	// var act Code
 	var door Code
 	var item Code
-	var acts []Act = nil
+	var acts []ActName = nil
 
 	for k, actArray := range actCommandMap {
 		if strings.Contains(chose, string(k)) {

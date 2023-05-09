@@ -63,10 +63,10 @@ func checkInventory(item Code) bool {
 	return false
 }
 
-func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bool) bool {
+func checkActToDoor(actArray []ActName, doorCode Code, ifDoor *Code, ifDoorIsOpen bool) bool {
 	if actArray != nil {
 		for _, act := range actArray {
-			if act.getActing().direction == doorCode {
+			if act.getActing().targetCode == doorCode {
 				return true
 			}
 		}

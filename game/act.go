@@ -1,30 +1,31 @@
 package game
 
-type Act string
+type ActName string
 type ActCommand string
 
 type Acting struct {
-	name      string
-	direction Code
-	coords    Coords
+	name       string
+	targetCode Code
+	coords     Coords
 }
 
 const (
-	upAct        Act = "up"
-	downAct      Act = "down"
-	rightAct     Act = "right"
-	leftAct      Act = "left"
-	openAct      Act = "open"
-	breakOpenAct Act = "breakOpen"
-	keyOpenAct   Act = "keyOpen"
+	upAct        ActName = "up"
+	downAct      ActName = "down"
+	rightAct     ActName = "right"
+	leftAct      ActName = "left"
+	openAct      ActName = "open"
+	breakOpenAct ActName = "breakOpen"
+	keyOpenAct   ActName = "keyOpen"
+	
 )
 
-func (act Act) getActing() Acting {
+func (act ActName) getActing() Acting {
 	return actMap[act]
 }
 
 func (move Acting) actMove() {
-	if move.direction == codeFloor {
+	if move.targetCode == codeFloor {
 		directionCoords := NewCoords(playInfo.currentCoords, move.coords)
 		if checkOutFieldByCoords(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
 			blankScript.print()
@@ -70,7 +71,7 @@ func (move Acting) actMove() {
 	}
 }
 
-func actByAttribute(door Code, item Code, acts []Act) {
+func actByAttribute(door Code, item Code, acts []ActName) {
 	ifDoor, _ := playInfo.getAroundDoorCoords()
 	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpenDoor()
 	if door > 0 && !checkActToDoor(acts, door, ifDoor, ifDoorIsOpen) {
