@@ -6,22 +6,22 @@ type PlayInfo struct {
 	goalCoords    Coords
 	currentCoords Coords
 
-	upPlace    *Code
+/* 	upPlace    *Code
 	downPlace  *Code
 	rightPlace *Code
-	leftPlace  *Code
+	leftPlace  *Code */
 
 	inventory []Code
 }
 
-func setPlayInfo(coords Coords) {
+/* func setPlayInfo(coords Coords) {
 	upCoords, downCoords, rightCoords, leftCoords := getAroundCoords(coords)
 
 	playInfo.upPlace = getPlaceByCoords(upCoords)
 	playInfo.downPlace = getPlaceByCoords(downCoords)
 	playInfo.rightPlace = getPlaceByCoords(rightCoords)
 	playInfo.leftPlace = getPlaceByCoords(leftCoords)
-}
+} */
 
 func updatePlayerPlace(tempPlaceCoords Coords, tempPlace *Code) {
 	currentPlace := getPlaceByCoords(playInfo.currentCoords)
@@ -30,22 +30,24 @@ func updatePlayerPlace(tempPlaceCoords Coords, tempPlace *Code) {
 	*currentPlace = codeFloor
 	*tempPlace = codePlayer
 
-	setPlayInfo(playInfo.currentCoords)
+	// setPlayInfo(playInfo.currentCoords)
 }
 
 func (platInfo PlayInfo) getAroundDoorCoords() (*Code, string) {
-	aroundPlace := []*Code{playInfo.upPlace, playInfo.downPlace, playInfo.rightPlace, playInfo.leftPlace}
-	for i, place := range aroundPlace {
-		if place != nil && (*place).isDoor() {
+	// aroundPlace := []*Code{playInfo.upPlace, playInfo.downPlace, playInfo.rightPlace, playInfo.leftPlace}
+	coordsArray := getAroundCoords(platInfo.currentCoords)
 
-			return place, string(getDoorSideWayByIndex(i))
+	for i, coords := range coordsArray {
+		place := getPlaceByCoords(coords)
+		if place != nil && (*place).isDoor() {
+			return place, Moving((i + 1) * moving).getDirectionName()
 		}
 	}
 
 	return nil, ""
 }
 
-func getDoorSideWayByIndex(index int) Act {
+/* func getDoorSideWayByIndex(index int) Act {
 	switch index {
 	case 0:
 		return upAct
@@ -58,7 +60,7 @@ func getDoorSideWayByIndex(index int) Act {
 	}
 
 	return ""
-}
+} */
 
 func printInventory() {
 	inventorys := playInfo.inventory

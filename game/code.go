@@ -2,8 +2,15 @@ package game
 
 type Code int
 
-const door = 100
+type Act Code
+type Moving Act
+type Actioning Act
+
 const item = 10
+const door = 100
+const act = 1000
+const moving = act
+const action = act
 
 const (
 	codePlayer Code = iota - 1
@@ -23,16 +30,44 @@ const (
 	codeWoodDoor
 )
 
+const (
+	codeUp Moving = (iota + 1) * moving
+	codeDown
+	codeRight
+	codeLeft
+)
+
+const (
+	codeOpen Actioning = Actioning(codeLeft) + (iota + 1) * action
+	codeBreak
+	codeUnlock
+	codeClose
+	codeLock
+	codeGet
+)
+
+func (code Code) getActNumber() int {
+	return int(code) / act
+}
+
 func (code Code) getDoorNumber() int {
-	return int(code) / door
+	return int(code) % act / door
 }
 
 func (code Code) getItemNumber() int {
 	return int(code) % door / item
 }
 
+func (code Code) isActioning() bool {
+	if code.getActNumber() > 0 {
+		return true
+	}
+
+	return false
+}
+
 func (code Code) isDoor() bool {
-	if code.getDoorNumber() > 0 {
+	if code.getActNumber() == 0 && code.getDoorNumber() < 10 && code.getDoorNumber() > 0 {
 		return true
 	}
 
@@ -63,7 +98,7 @@ func checkInventory(item Code) bool {
 	return false
 }
 
-func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bool) bool {
+/* func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bool) bool {
 	if actArray != nil {
 		for _, act := range actArray {
 			if act.getActing().target == doorCode {
@@ -79,8 +114,16 @@ func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bo
 	doNotActToDoorScript.print((*ifDoor).getName())
 
 	return false
-}
+} */
 
 func (code Code) getName() string {
 	return attributeMap[code].getName()
+}
+
+func (actioning Code) isCanActioning(door Code, item Code) bool {
+	if door.getDoorNumber() == item.getItemNumber() && item.getItemNumber() == actioning.getActNumber() - 4 {
+		return true
+	}
+
+	return false
 }

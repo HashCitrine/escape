@@ -5,7 +5,7 @@ type Coords struct {
 	x int
 }
 
-func getAroundCoords(coords Coords) (upCoords Coords, downCoords Coords, rightCoords Coords, leftCoords Coords) {
+/* func getAroundCoords(coords Coords) (upCoords Coords, downCoords Coords, rightCoords Coords, leftCoords Coords) {
 	upCoords, downCoords, rightCoords, leftCoords = coords, coords, coords, coords
 
 	upCoords.y = coords.y - 1
@@ -14,6 +14,17 @@ func getAroundCoords(coords Coords) (upCoords Coords, downCoords Coords, rightCo
 	rightCoords.x = coords.x + 1
 
 	return
+} */
+
+func getAroundCoords(coords Coords) []Coords {
+	upCoords, downCoords, rightCoords, leftCoords := coords, coords, coords, coords
+
+	upCoords.y = coords.y - 1
+	downCoords.y = coords.y + 1
+	rightCoords.x = coords.x + 1
+	leftCoords.x = coords.x - 1
+
+	return []Coords{upCoords, downCoords, rightCoords, leftCoords}
 }
 
 func newCoords(currentCoords Coords, addCoords Coords) Coords {
