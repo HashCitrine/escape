@@ -38,7 +38,6 @@ func initPlayInfo(currentCoords Coords, goalCoords Coords) {
 		inventory:     []Code{codeHand},
 	}
 
-	// setPlayInfo(currentCoords)
 	return
 }
 
@@ -59,7 +58,6 @@ func PlayGame() {
 		clearConsole.print()
 		Move(scan)
 		Action(scan)
-		// Action(scan)
 	}
 }
 
@@ -104,13 +102,13 @@ func PrintScript() {
 	questionScript.print()
 }
 
-func Action( /* door Code, item Code, */ scan string) {
+func Action(scan string) {
 	var door Code
 	var item Code
-	var act Code
+	var interact Code
 
 	for code, attribute := range attributeMap {
-		if code.isOpenDoor() {
+		if code.isOpen() {
 			continue
 		}
 
@@ -125,26 +123,34 @@ func Action( /* door Code, item Code, */ scan string) {
 				}
 
 				if code.isActioning() {
-					act = code
+					interact = code
 				}
 			}
 		}
 	}
 
 	ifDoor, _ := playInfo.getAroundDoorCoords()
-	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpenDoor()
-
-	/* if door > 0 && !checkActToDoor(acts, door, ifDoor, ifDoorIsOpen) {
-		return
-	} */
-
-	if item > 0 && !checkInventory(item) {
-		notHaveItemScript.print(item.getName())
-		return
-	}
+	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpen()
 
 	if door == codeWoodDoor && item == 0 {
 		item = codeHand
+	}
+
+	if item > 0 {
+		ishaveItem := checkInventory(item)
+
+		switch ishaveItem {
+		case true:
+			if door == 0 {
+				doNotActByItemScript.print(item.getName())
+			}
+		case false:
+			notHaveItemScript.print(item.getName())
+		}
+	}
+
+	if door > 0 && item == 0 {
+		needActAnythingScript.print()
 	}
 
 	if door > 0 && item > 0 {
@@ -153,13 +159,18 @@ func Action( /* door Code, item Code, */ scan string) {
 			return
 		}
 
-		openingDoor := door + item
+		tryOpenTheDoor := door + item
 		aroundDoor, _ := playInfo.getAroundDoorCoords()
 
-		if *aroundDoor == door && openingDoor.isOpenDoor() {
-			if act.isCanActioning(door, item) {
+		if aroundDoor == nil {
+			canNotFindAroundDoor.print(door.getName(), item.getName())
+			return
+		}
+
+		if *aroundDoor == door && tryOpenTheDoor.isOpen() {
+			if interact.isCanActioning(door, item) {
 				useItemToDoorScript.print(item.getName(), door.getName())
-				*aroundDoor = openingDoor
+				*aroundDoor = tryOpenTheDoor
 				return
 			}
 
@@ -171,21 +182,21 @@ func Action( /* door Code, item Code, */ scan string) {
 	}
 }
 
-func Move(act string) {
-	var moving Moving
+func Move(scan string) {
+	var movement Movement
 
 	for command, code := range movingCommandMap {
-		if strings.Contains(act, string(command)) {
-			moving = code
+		if strings.Contains(scan, string(command)) {
+			movement = code
 		}
 	}
 
-	if moving == 0 {
+	if movement == 0 {
 		return
 	}
 
-	moveCoords := moving.getDirectionInfo()
-	direction := moving.getDirectionName()
+	moveCoords := movement.getDirectionInfo()
+	direction := movement.getDirectionName()
 
 	directionCoords := newCoords(playInfo.currentCoords, moveCoords)
 	if checkOutFieldByCoords(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
@@ -195,13 +206,13 @@ func Move(act string) {
 
 	directionPlace := getPlaceByCoords(directionCoords)
 
-	if (*directionPlace).isOpenDoor() {
+	if (*directionPlace).isOpen() {
 		if directionCoords == playInfo.goalCoords {
 			endGame = true
 			updatePlayerPlace(directionCoords, directionPlace)
 			return
 		}
-		// doorName := attributeMap[Code((*directionPlace).getDoorNumber())*door].getName()
+		
 		doorName := (*directionPlace).getName()
 		passDoorScript.print(doorName)
 

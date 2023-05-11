@@ -3,8 +3,8 @@ package game
 type Code int
 
 type Act Code
-type Moving Act
-type Actioning Act
+type Movement Act
+type Interaction Act
 
 const item = 10
 const door = 100
@@ -31,14 +31,14 @@ const (
 )
 
 const (
-	codeUp Moving = (iota + 1) * moving
+	codeUp Movement = (iota + 1) * moving
 	codeDown
 	codeRight
 	codeLeft
 )
 
 const (
-	codeOpen Actioning = Actioning(codeLeft) + (iota + 1) * action
+	codeOpen Interaction = Interaction(codeLeft) + (iota+1)*action
 	codeBreak
 	codeUnlock
 	codeClose
@@ -82,7 +82,7 @@ func (code Code) isItem() bool {
 	return false
 }
 
-func (code Code) isOpenDoor() bool {
+func (code Code) isOpen() bool {
 	if code.getDoorNumber() == code.getItemNumber() && code.isDoor() {
 		return true
 	}
@@ -98,30 +98,12 @@ func checkInventory(item Code) bool {
 	return false
 }
 
-/* func checkActToDoor(actArray []Act, doorCode Code, ifDoor *Code, ifDoorIsOpen bool) bool {
-	if actArray != nil {
-		for _, act := range actArray {
-			if act.getActing().target == doorCode {
-				return true
-			}
-		}
-	}
-
-	if ifDoorIsOpen {
-		alreadyOpenDoorScript.print((*ifDoor).getName())
-	}
-
-	doNotActToDoorScript.print((*ifDoor).getName())
-
-	return false
-} */
-
 func (code Code) getName() string {
 	return attributeMap[code].getName()
 }
 
 func (actioning Code) isCanActioning(door Code, item Code) bool {
-	if door.getDoorNumber() == item.getItemNumber() && item.getItemNumber() == actioning.getActNumber() - 4 {
+	if door.getDoorNumber() == item.getItemNumber() && item.getItemNumber() == actioning.getActNumber()-4 {
 		return true
 	}
 

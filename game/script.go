@@ -10,6 +10,7 @@ const (
 	clearConsole          Script = "\033[H\033[2J"
 	doNotTooManyActScript Script = "욕심 부리지 말자. 차근차근 하나씩 행동해야 한다."
 	blankScript           Script = "막힌 길이다. 다시 생각해보자."
+	needActAnythingScript Script = "정신차리자. 행동해야 한다."
 )
 
 const (
@@ -29,6 +30,9 @@ const (
 	useItemToDoorScript       Fnarration = "%s(으)로 %s을 열었다. 이제 지나갈 수 있다.\n"
 	canNotUseItemToDoorScript Fnarration = "%s(으)로는 %s을 열 수 없다. 다른 방법을 찾아보자.\n"
 	doNotActToDoorScript      Fnarration = "%s은 굳게 닫혀있다.\n"
+	doNotActByItemScript      Fnarration = "%s를 가지고 있다. 이걸로 무엇을 할 수 있을까?"
+	// doNotActByDoorScript      Fnarration = "%s을 열 방법을 찾아야 한다."
+	canNotFindAroundDoor Fnarration = "%s에 %s를 사용할 수 있을까? 확인해보자."
 )
 
 func print(script string) {
