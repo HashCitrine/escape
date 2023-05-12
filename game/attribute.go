@@ -21,9 +21,9 @@ func initAttributeMap() {
 	blank := getAttribute(getStringArray("공백"), "⬛", nil)
 
 	// Door
-	goalDoor := getAttribute(getStringArray("회색문", "회색"), "🟪", getPlace(0, 7))
-	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "🟦", getPlace(2, 2))
-	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "🟫", getPlace(1, 4))
+	goalDoor := getAttribute(getStringArray("회색문", "회색"), "&", getPlace(0, 7))
+	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "=", getPlace(2, 2))
+	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "◐", getPlace(1, 4))
 
 	// Item
 	key := getAttribute(getStringArray("열쇠", "키"), "🗝️", getPlace(5, 5))

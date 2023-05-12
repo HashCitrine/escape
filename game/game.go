@@ -200,7 +200,7 @@ func Move(scan string) {
 
 	directionCoords := newCoords(playInfo.currentCoords, moveCoords)
 	if checkOutFieldByCoords(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
-		blankScript.print()
+		blankScript.print(direction)
 		return
 	}
 
@@ -212,7 +212,7 @@ func Move(scan string) {
 			updatePlayerPlace(directionCoords, directionPlace)
 			return
 		}
-		
+
 		doorName := (*directionPlace).getName()
 		passDoorScript.print(doorName)
 
