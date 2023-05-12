@@ -9,8 +9,8 @@ type Interaction Act
 const item = 10
 const door = 100
 const act = 1000
-const moving = act
-const action = act
+const movement = act
+const interaction = act
 
 const (
 	codePlayer Code = iota - 1
@@ -31,14 +31,14 @@ const (
 )
 
 const (
-	codeUp Movement = (iota + 1) * moving
+	codeUp Movement = (iota + 1) * movement
 	codeDown
 	codeRight
 	codeLeft
 )
 
 const (
-	codeOpen Interaction = Interaction(codeLeft) + (iota+1)*action
+	codeOpen Interaction = Interaction(codeLeft) + (iota+1)*interaction
 	codeBreak
 	codeUnlock
 	codeClose
@@ -58,7 +58,7 @@ func (code Code) getItemNumber() int {
 	return int(code) % door / item
 }
 
-func (code Code) isActioning() bool {
+func (code Code) isAct() bool {
 	if code.getActNumber() > 0 {
 		return true
 	}
@@ -102,8 +102,8 @@ func (code Code) getName() string {
 	return attributeMap[code].getName()
 }
 
-func (actioning Code) isCanActioning(door Code, item Code) bool {
-	if door.getDoorNumber() == item.getItemNumber() && item.getItemNumber() == actioning.getActNumber()-4 {
+func (interaction Interaction) isCanActioning(door Code, item Code) bool {
+	if door.getDoorNumber() == item.getItemNumber() && item.getItemNumber() == Code(interaction).getActNumber()-4 {
 		return true
 	}
 

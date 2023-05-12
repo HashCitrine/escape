@@ -1,17 +1,17 @@
 package game
 
-type ActCommand string
+type Command string
 
 type Acting struct {
 	target Code
 	coords Coords
 }
 
-var movingCommandMap map[ActCommand]Movement
-var actionCommandMap map[ActCommand][]Interaction
+var movementCommandMap map[Command]Movement
+var interactionCommandMap map[Command][]Interaction
 
-func initMovingCommandMap() {
-	movingCommandMap = map[ActCommand]Movement{
+func initMovementCommandMap() {
+	movementCommandMap = map[Command]Movement{
 		"위": codeUp,
 		"앞": codeUp,
 		"상": codeUp,
@@ -44,8 +44,8 @@ func initMovingCommandMap() {
 	}
 }
 
-func initActionCommandMap() {
-	actionCommandMap = map[ActCommand][]Interaction{
+func initInteractionCommandMap() {
+	interactionCommandMap = map[Command][]Interaction{
 		"연":  {codeOpen, codeBreak, codeUnlock},
 		"열":  {codeOpen, codeBreak, codeUnlock},
 		"사용": {codeOpen, codeBreak, codeUnlock},

@@ -23,7 +23,7 @@ func (playInfo PlayInfo) getAroundDoorCoords() (*Code, string) {
 	for i, coords := range coordsArray {
 		place := getPlaceByCoords(coords)
 		if place != nil && (*place).isDoor() {
-			return place, Movement((i + 1) * moving).getDirectionName()
+			return place, Movement((i + 1) * movement).getDirectionName()
 		}
 	}
 

@@ -16,7 +16,7 @@ func init() {
 	initField()
 	initAttributeMap()
 	// initActMap()
-	initMovingCommandMap()
+	initMovementCommandMap()
 	initPlayInfo(Coords{y: 4, x: 1}, Coords{y: 0, x: 7})
 }
 
@@ -105,7 +105,7 @@ func PrintScript() {
 func Action(scan string) {
 	var door Code
 	var item Code
-	var interact Code
+	var interactionArray[] Interaction
 
 	for code, attribute := range attributeMap {
 		if code.isOpen() {
@@ -120,10 +120,6 @@ func Action(scan string) {
 
 				if code.isItem() {
 					item = code
-				}
-
-				if code.isActioning() {
-					interact = code
 				}
 			}
 		}
@@ -168,7 +164,25 @@ func Action(scan string) {
 		}
 
 		if *aroundDoor == door && tryOpenTheDoor.isOpen() {
-			if interact.isCanActioning(door, item) {
+			var interaction Interaction
+			for command, code := range interactionCommandMap {
+				if strings.Contains(scan, string(command)) {
+					interactionArray = code
+				}
+			}
+
+			// door check
+			if len(interactionArray) > 0 {
+				for _, targetInteractionCode := range interactionArray {
+					if Code(targetInteractionCode).getActNumber() == door.getDoorNumber() {
+						interaction = targetInteractionCode
+					}
+				}
+			} else {
+				return
+			}
+
+			if interaction.isCanActioning(door, item) {
 				useItemToDoorScript.print(item.getName(), door.getName())
 				*aroundDoor = tryOpenTheDoor
 				return
@@ -185,7 +199,7 @@ func Action(scan string) {
 func Move(scan string) {
 	var movement Movement
 
-	for command, code := range movingCommandMap {
+	for command, code := range movementCommandMap {
 		if strings.Contains(scan, string(command)) {
 			movement = code
 		}
