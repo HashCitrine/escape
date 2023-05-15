@@ -88,4 +88,3 @@ func setAttributeToField() {
 func (attribute Attribute) getName() string {
 	return attribute.commands[0]
 }
-
