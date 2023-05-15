@@ -17,6 +17,7 @@ func init() {
 	initAttributeMap()
 	// initActMap()
 	initMovementCommandMap()
+	initInteractionCommandMap()
 	initPlayInfo(Coords{y: 4, x: 1}, Coords{y: 0, x: 7})
 }
 
@@ -174,7 +175,7 @@ func Action(scan string) {
 			// door check
 			if len(interactionArray) > 0 {
 				for _, targetInteractionCode := range interactionArray {
-					if Code(targetInteractionCode).getActNumber() == door.getDoorNumber() {
+					if Code(targetInteractionCode).getInteractionNumber() == door.getDoorNumber() {
 						interaction = targetInteractionCode
 					}
 				}

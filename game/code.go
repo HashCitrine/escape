@@ -50,6 +50,10 @@ func (code Code) getActNumber() int {
 	return int(code) / act
 }
 
+func (code Code) getInteractionNumber() int {
+	return code.getActNumber() - 4
+}
+
 func (code Code) getDoorNumber() int {
 	return int(code) % act / door
 }
