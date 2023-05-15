@@ -42,7 +42,7 @@ func initPlayInfo(currentCoords Coords, goalCoords Coords) {
 	return
 }
 
-func PlayGame() {
+func Play() {
 	// initGame()
 	clearConsole.print()
 	for {
