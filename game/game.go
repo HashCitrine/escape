@@ -105,7 +105,7 @@ func PrintScript() {
 func Action(scan string) {
 	var door Code
 	var item Code
-	var interactionArray[] Interaction
+	var interactionArray []Interaction
 
 	for code, attribute := range attributeMap {
 		if code.isOpen() {
@@ -248,6 +248,7 @@ func Move(scan string) {
 	if (*directionPlace).isItem() {
 		itemName := attributeMap[(*directionPlace)].getName()
 		findItmeScript.print(itemName)
+		getItemScript.print(itemName)
 		inventory := &playInfo.inventory
 		*inventory = append(*inventory, (*directionPlace))
 	}

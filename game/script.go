@@ -13,7 +13,7 @@ const (
 )
 
 const (
-	startScript    Narration = "당신의 고양이가 미로의 함정에 빠졌습니다. 빠져나갈 수 있도록 도와줘야 합니다."
+	startScript    Narration = "당신의 고양이가 미로의 함정에 빠졌습니다. 빠져나갈 수 있도록 지시를 내려야 합니다."
 	endScript      Narration = "밝은 빛이 보입니다. 당신의 고양이는 탈출에 성공했습니다."
 	questionScript Narration = "어떤 행동을 하시겠습니까?"
 )
@@ -24,7 +24,8 @@ const (
 	passDoorScript            Fnarration = "고양이가 %s을 지나왔습니다.\n"
 	closeDoorScript           Fnarration = "%s이 닫혀 있다. 이대로는 나아갈 수 없습니다.\n"
 	moveScript                Fnarration = "고양이가 %s로 이동했습니다.\n"
-	findItmeScript            Fnarration = "%s가 떨어져 있습니다. 어딘가에 사용할 수 있을 것 같다. 챙겨놓도록 하자.\n"
+	findItmeScript            Fnarration = "%s가 떨어져 있습니다.\n"
+	getItemScript             Fnarration = "고양이가 %s을 챙겼습니다.\n"
 	notHaveItemScript         Fnarration = "%s를 가지고 있지 않습니다.\n"
 	alreadyOpenDoorScript     Fnarration = "%s은 이미 열려있습니다. 지나갈 수 있습니다.\n"
 	useItemToDoorScript       Fnarration = "%s(으)로 %s을 열었습니다. 이제 지나갈 수 있습니다.\n"
