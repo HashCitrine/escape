@@ -4,11 +4,12 @@ import "fmt"
 
 type GameInfo struct {
 	goalCoords   Coords
+	playerName   string
 	playerCoords Coords
-	inventory []Component
+	inventory    []Component
 }
 
-func updatePlayerPlace(tempPlaceCoords Coords/* , tempPlace *Code */) {
+func updatePlayerPlace(tempPlaceCoords Coords /* , tempPlace *Code */) {
 	/* currentPlace := getPlaceByCoords(playInfo.playerCoords)
 	playInfo.playerCoords = tempPlaceCoords
 
