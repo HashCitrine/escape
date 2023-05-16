@@ -58,24 +58,30 @@ func initInteractionCommandMap() {
 	}
 }
 
-func (act Movement) getDirectionInfo() Coords {
-	coords := Coords{}
+func (act Movement) getDirectionInfo() (coords Coords, directionName string) {
+	// coords := Coords{}
 	coordsArray := getAroundCoords(coords)
 
 	switch act {
 	case codeUp:
 		coords = coordsArray[0]
+		directionName = "위쪽"
 	case codeDown:
 		coords = coordsArray[1]
+		directionName = "아래쪽"
 	case codeRight:
 		coords = coordsArray[2]
+		directionName = "오른쪽"
 	case codeLeft:
 		coords = coordsArray[3]
+		directionName = "왼쪽"
 	}
-	return coords
+	// return coords
+
+	return
 }
 
-func (act Movement) getDirectionName() string {
+/* func (act Movement) getDirectionName() string {
 	var direction string
 	switch act {
 	case codeUp:
@@ -89,4 +95,4 @@ func (act Movement) getDirectionName() string {
 	}
 
 	return direction
-}
+} */

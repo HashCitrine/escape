@@ -7,14 +7,15 @@ import (
 	"strings"
 )
 
-var fieldArray [][]Code
-var playInfo PlayInfo
+var fieldArray [6][8]Component
+var playInfo GameInfo
 
 var endGame = false
 
 func init() {
 	initField()
 	initAttributeMap()
+	setAttributeToField()
 	// initActMap()
 	initMovementCommandMap()
 	initInteractionCommandMap()
@@ -22,21 +23,25 @@ func init() {
 }
 
 func initField() {
-	fieldArray = make([][]Code, 6)
+	/* fieldArray = make([][]Component, 6)
 
 	for i := range fieldArray {
-		fieldArray[i] = make([]Code, 8)
+		fieldArray[i] = make([]Component, 8)
 		for j := range fieldArray[i] {
 			fieldArray[i][j] = codeBlank
 		}
+	} */
+
+	for _, floor := range floorPlace {
+		fieldArray[floor.y][floor.x] = Component{passable: true}
 	}
 }
 
 func initPlayInfo(currentCoords Coords, goalCoords Coords) {
-	playInfo = PlayInfo{
-		goalCoords:    goalCoords,
-		currentCoords: currentCoords,
-		inventory:     []Code{codeHand},
+	playInfo = GameInfo{
+		goalCoords:   goalCoords,
+		playerCoords: currentCoords,
+		inventory:    []Component{item.getComponent(codeHand, true)},
 	}
 
 	return
@@ -44,7 +49,7 @@ func initPlayInfo(currentCoords Coords, goalCoords Coords) {
 
 func Play() {
 	// initGame()
-	clearConsole.print()
+	// clearConsole.print()
 	for {
 		DrawMap()
 		PrintScript()
@@ -63,6 +68,8 @@ func Play() {
 }
 
 func DrawMap() {
+	player := playInfo.playerCoords
+
 	for i := 0; i < len(fieldArray); i++ {
 		var tempArr = fieldArray[i]
 
@@ -74,6 +81,22 @@ func DrawMap() {
 				// fmt.Print("\t")
 			}
 
+			if i == player.y && j == player.x {
+				fmt.Print(playerIcon)
+				continue
+			}
+
+			component := tempArr[j]
+			if component.passable == false && component.codetype != door {
+				fmt.Print(blankIcon)
+				continue
+			}
+
+			if component.codetype == "" && component.code == 0 {
+				fmt.Print(floorIcon)
+				continue
+			}
+
 			fmt.Print(attributeMap[tempArr[j]].icon)
 		}
 	}
@@ -82,10 +105,10 @@ func DrawMap() {
 func PrintScript() {
 	fmt.Println()
 	fmt.Println()
-	currentPlace := getPlaceByCoords(playInfo.currentCoords)
+	/* currentPlace := getPlaceByCoords(playInfo.playerCoords)
 	if currentPlace == attributeMap[codePlayer].place[0] {
 		startScript.print()
-	}
+	} */
 
 	if endGame {
 		endScript.print()
@@ -104,23 +127,22 @@ func PrintScript() {
 }
 
 func Action(scan string) {
-	var door Code
-	var item Code
-	var interactionArray []Interaction
+	var commandDoor Component
+	var commandItem Component
 
-	for code, attribute := range attributeMap {
-		if code.isOpen() {
+	for component, attribute := range attributeMap {
+		if component.isOpen() {
 			continue
 		}
 
 		for _, command := range attribute.commands {
 			if strings.Contains(scan, command) {
-				if code.isDoor() {
-					door = code
+				if component.isDoor() {
+					commandDoor = component
 				}
 
-				if code.isItem() {
-					item = code
+				if component.isItem() {
+					commandItem = component
 				}
 			}
 		}
@@ -129,71 +151,74 @@ func Action(scan string) {
 	ifDoor, _ := playInfo.getAroundDoorCoords()
 	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpen()
 
-	if door == codeWoodDoor && item == 0 {
-		item = codeHand
+	if commandDoor.code == codeWoodDoor && commandItem.isEmpty() {
+		commandItem = item.getComponent(codeHand, true)
 	}
 
-	if item > 0 {
-		ishaveItem := checkInventory(item)
-
-		switch ishaveItem {
+	if !commandItem.isEmpty() {
+		switch hasItem(commandItem) {
 		case true:
-			if door == 0 {
-				doNotActByItemScript.print(item.getName())
+			if commandDoor.isEmpty() {
+				doNotActByItemScript.print(commandItem.getName())
 			}
 		case false:
-			notHaveItemScript.print(item.getName())
+			notHaveItemScript.print(commandItem.getName())
 		}
 	}
 
-	if door > 0 && item == 0 {
+	if !commandDoor.isEmpty() && commandItem.isEmpty() {
 		needActAnythingScript.print()
 	}
 
-	if door > 0 && item > 0 {
+	if !commandDoor.isEmpty() && !commandItem.isEmpty() {
 		if ifDoor != nil && ifDoorIsOpen {
 			alreadyOpenDoorScript.print((*ifDoor).getName())
 			return
 		}
 
-		tryOpenTheDoor := door + item
 		aroundDoor, _ := playInfo.getAroundDoorCoords()
 
 		if aroundDoor == nil {
-			canNotFindAroundDoor.print(door.getName(), item.getName())
+			canNotFindAroundDoor.print(commandDoor.getName(), commandItem.getName())
 			return
 		}
 
-		if *aroundDoor == door && tryOpenTheDoor.isOpen() {
-			var interaction Interaction
-			for command, code := range interactionCommandMap {
+		canOpenDoor := commandDoor.tryOpenDoor(commandItem)
+		if *aroundDoor == commandDoor && canOpenDoor {
+			var interactionArray []Interaction
+			// var interaction Interaction
+			for command, interactions := range interactionCommandMap {
 				if strings.Contains(scan, string(command)) {
-					interactionArray = code
+					interactionArray = interactions
 				}
 			}
 
 			// door check
 			if len(interactionArray) > 0 {
-				for _, targetInteractionCode := range interactionArray {
-					if Code(targetInteractionCode).getInteractionNumber() == door.getDoorNumber() {
-						interaction = targetInteractionCode
+				for _, tempInteractionCode := range interactionArray {
+					fmt.Println(tempInteractionCode.isCanDo(commandDoor, commandItem))
+					if tempInteractionCode.isCanDo(commandDoor, commandItem) {
+						// interaction = tempInteractionCode
+						useItemToDoorScript.print(commandItem.getName(), commandDoor.getName())
+						(*aroundDoor).passable = true
+						return
 					}
 				}
 			} else {
 				return
 			}
 
-			if interaction.isCanActioning(door, item) {
-				useItemToDoorScript.print(item.getName(), door.getName())
+			/* if interaction.isCanDo(commandDoor, commandItem) {
+				useItemToDoorScript.print(commandItem.getName(), commandDoor.getName())
 				*aroundDoor = tryOpenTheDoor
 				return
-			}
+			} */
 
-			doNotActToDoorScript.print(door.getName())
+			doNotActToDoorScript.print(commandDoor.getName())
 			return
 		}
 
-		canNotUseItemToDoorScript.print(item.getName(), door.getName())
+		canNotUseItemToDoorScript.print(commandItem.getName(), commandDoor.getName())
 	}
 }
 
@@ -210,12 +235,12 @@ func Move(scan string) {
 		return
 	}
 
-	moveCoords := movement.getDirectionInfo()
-	direction := movement.getDirectionName()
+	moveCoords, directionName := movement.getDirectionInfo()
+	// directionName := movement.getDirectionName()
 
-	directionCoords := newCoords(playInfo.currentCoords, moveCoords)
-	if checkOutFieldByCoords(directionCoords) || *getPlaceByCoords(directionCoords) == codeBlank {
-		blankScript.print(direction)
+	directionCoords := newCoords(playInfo.playerCoords, moveCoords)
+	if !directionCoords.isPassable() {
+		blankScript.print(directionName)
 		return
 	}
 
@@ -224,7 +249,7 @@ func Move(scan string) {
 	if (*directionPlace).isOpen() {
 		if directionCoords == playInfo.goalCoords {
 			endGame = true
-			updatePlayerPlace(directionCoords, directionPlace)
+			updatePlayerPlace(directionCoords /* , directionPlace */)
 			return
 		}
 
@@ -234,7 +259,7 @@ func Move(scan string) {
 		directionCoords = newCoords(directionCoords, moveCoords)
 		directionPlace = getPlaceByCoords(directionCoords)
 
-		updatePlayerPlace(directionCoords, directionPlace)
+		updatePlayerPlace(directionCoords /* , directionPlace */)
 		return
 	}
 
@@ -244,7 +269,7 @@ func Move(scan string) {
 		return
 	}
 
-	moveScript.print(direction)
+	moveScript.print(directionName)
 
 	if (*directionPlace).isItem() {
 		itemName := attributeMap[(*directionPlace)].getName()
@@ -252,8 +277,9 @@ func Move(scan string) {
 		getItemScript.print(itemName)
 		inventory := &playInfo.inventory
 		*inventory = append(*inventory, (*directionPlace))
+		(*directionPlace) = Component{passable: true}
 	}
 
 	// 현재 위치 업데이트
-	updatePlayerPlace(directionCoords, directionPlace)
+	updatePlayerPlace(directionCoords /* , directionPlace */)
 }

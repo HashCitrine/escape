@@ -5,21 +5,24 @@ import "fmt"
 type Attribute struct {
 	commands []string
 	icon     string
-	place    []*Code
+	place    []*Component
 }
 
-var attributeMap map[Code]Attribute
+var attributeMap map[Component]Attribute
+
+const (
+	playerIcon = "🐈"
+	floorIcon  = "⬜"
+	blankIcon  = "⬛"
+)
+
+var floorPlace = []Coords{
+	{0, 4}, {0, 5}, {0, 6},
+	{2, 1}, {2, 3}, {2, 4},
+	{3, 1}, {3, 4},
+	{4, 1}, {4, 4}, {4, 5}}
 
 func initAttributeMap() {
-	// Structor
-	start := getAttribute(getStringArray("시작 지점"), "🐈", getPlace(4, 1))
-	floor := getAttribute(getStringArray("복도"), "⬜",
-		getPlace(0, 4), getPlace(0, 5), getPlace(0, 6),
-		getPlace(2, 1), getPlace(2, 3), getPlace(2, 4),
-		getPlace(3, 1), getPlace(3, 4),
-		getPlace(4, 4), getPlace(4, 5))
-	blank := getAttribute(getStringArray("공백"), "⬛", nil)
-
 	// Door
 	goalDoor := getAttribute(getStringArray("회색문", "회색"), "&", getPlace(0, 7))
 	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "=", getPlace(2, 2))
@@ -34,25 +37,19 @@ func initAttributeMap() {
 	openGlassDoor := getAttribute(glassDoor.commands, "≠", nil)
 	openWoodDoor := getAttribute(woodDoor.commands, "○", nil)
 
-	attributeMap = map[Code]Attribute{
-		codePlayer: start,
-		codeFloor:  floor,
-		codeBlank:  blank,
+	attributeMap = map[Component]Attribute{
+		door.getComponent(codeGoalDoor, false):  goalDoor,
+		door.getComponent(codeGlassDoor, false): glassDoor,
+		door.getComponent(codeWoodDoor, false):  woodDoor,
 
-		codeGoalDoor:  goalDoor,
-		codeGlassDoor: glassDoor,
-		codeWoodDoor:  woodDoor,
+		item.getComponent(codeKey, true):    key,
+		item.getComponent(codeHammer, true): hammer,
+		item.getComponent(codeHand, true):   hand,
 
-		codeKey:    key,
-		codeHammer: hammer,
-		codeHand:   hand,
-
-		codeGoalDoor + codeKey:     openGoalDoor,
-		codeGlassDoor + codeHammer: openGlassDoor,
-		codeWoodDoor + codeHand:    openWoodDoor,
+		door.getComponent(codeGoalDoor, true):  openGoalDoor,
+		door.getComponent(codeGlassDoor, true): openGlassDoor,
+		door.getComponent(codeWoodDoor, true):  openWoodDoor,
 	}
-
-	setAttributeToField()
 }
 
 func getIcon(icon interface{}) string {
@@ -63,7 +60,7 @@ func getStringArray(stringArray ...string) []string {
 	return stringArray
 }
 
-func getAttribute(commands []string, icon string, place ...*Code) Attribute {
+func getAttribute(commands []string, icon string, place ...*Component) Attribute {
 	if icon != "" {
 		// icon = getIcon(icon)
 	}
@@ -75,14 +72,18 @@ func getAttribute(commands []string, icon string, place ...*Code) Attribute {
 }
 
 func setAttributeToField() {
-	for attributeCode, attribute := range attributeMap {
-		placeArr := attribute.place
+	for component, attribute := range attributeMap {
+		placeArr := attribute.getPlace()
 		for _, place := range placeArr {
 			if place != nil {
-				*place = attributeCode
+				*place = component
 			}
 		}
 	}
+}
+
+func (attribute Attribute) getPlace() []*Component {
+	return attribute.place
 }
 
 func (attribute Attribute) getName() string {

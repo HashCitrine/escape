@@ -2,32 +2,43 @@ package game
 
 import "fmt"
 
-type PlayInfo struct {
-	goalCoords    Coords
-	currentCoords Coords
-
-	inventory []Code
+type GameInfo struct {
+	goalCoords   Coords
+	playerCoords Coords
+	inventory []Component
 }
 
-func updatePlayerPlace(tempPlaceCoords Coords, tempPlace *Code) {
-	currentPlace := getPlaceByCoords(playInfo.currentCoords)
-	playInfo.currentCoords = tempPlaceCoords
+func updatePlayerPlace(tempPlaceCoords Coords/* , tempPlace *Code */) {
+	/* currentPlace := getPlaceByCoords(playInfo.playerCoords)
+	playInfo.playerCoords = tempPlaceCoords
 
 	*currentPlace = codeFloor
-	*tempPlace = codePlayer
+	*tempPlace = codePlayer */
+
+	playInfo.playerCoords = tempPlaceCoords
 }
 
-func (playInfo PlayInfo) getAroundDoorCoords() (*Code, string) {
-	coordsArray := getAroundCoords(playInfo.currentCoords)
+func (playInfo GameInfo) getAroundDoorCoords() (*Component, string) {
+	coordsArray := getAroundCoords(playInfo.playerCoords)
 
 	for i, coords := range coordsArray {
 		place := getPlaceByCoords(coords)
 		if place != nil && (*place).isDoor() {
-			return place, Movement((i + 1) * movement).getDirectionName()
+			_, directionName := Movement(i + 1).getDirectionInfo()
+			return place, directionName
 		}
 	}
 
 	return nil, ""
+}
+
+func hasItem(item Component) bool {
+	for _, hasItem := range playInfo.inventory {
+		if hasItem.equals(item) {
+			return true
+		}
+	}
+	return false
 }
 
 func printInventory() {
@@ -39,12 +50,13 @@ func printInventory() {
 
 	fmt.Print("소지품 : ")
 
+	hand := item.getComponent(codeHand, true)
 	for i, inventory := range inventorys {
 		if i > 1 {
 			fmt.Print(", ")
 		}
 
-		if inventory == codeHand {
+		if inventory == hand {
 			continue
 		}
 
