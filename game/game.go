@@ -13,9 +13,8 @@ var playInfo GameInfo
 var endGame = false
 
 func init() {
-	initField()
 	initAttributeMap()
-	setAttributeToField()
+	initField()
 	// initActMap()
 	initMovementCommandMap()
 	initInteractionCommandMap()
@@ -35,6 +34,8 @@ func initField() {
 	for _, floor := range floorPlace {
 		fieldArray[floor.y][floor.x] = Component{passable: true}
 	}
+
+	setAttributeToField()
 }
 
 func initPlayInfo(currentCoords Coords, goalCoords Coords) {
