@@ -7,9 +7,9 @@ type Narration Script
 type Fnarration Script
 
 const (
-	clearConsole          Script = "\033[H\033[2J"
-	doNotTooManyActScript Script = "한 번에 하나씩 행동할 수 있습니다."
-	needActAnythingScript Script = "무엇이든 행동해야 합니다."
+	clearConsole              Script = "\033[H\033[2J"
+	doNotTooManyCommandScript Script = "한 번에 하나씩 행동할 수 있습니다."
+	needActAnythingScript     Script = "무엇이든 행동해야 합니다."
 )
 
 const (
@@ -19,7 +19,7 @@ const (
 )
 
 const (
-	blankScript           	  Fnarration = "%s은 막힌 길입니다."
+	blankScript               Fnarration = "%s은 막힌 길입니다."
 	lookAtTheDoorscript       Fnarration = "%s에 %s이 있습니다."
 	passDoorScript            Fnarration = "고양이가 %s을 지나왔습니다.\n"
 	closeDoorScript           Fnarration = "%s이 닫혀 있다. 이대로는 나아갈 수 없습니다.\n"
@@ -33,7 +33,7 @@ const (
 	doNotActToDoorScript      Fnarration = "%s은 굳게 닫혀있습니다.\n"
 	doNotActByItemScript      Fnarration = "%s를 가지고 있습니다."
 	// doNotActByDoorScript      Fnarration = "%s을 열 방법을 찾아야 한다."
-	canNotFindAroundDoor 	  Fnarration = "%s에 %s를 사용할 수 있을까? 확인해보자."
+	canNotFindAroundDoor Fnarration = "%s에 %s를 사용할 수 있을까? 확인해보자."
 )
 
 func print(script string) {

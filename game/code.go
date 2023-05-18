@@ -11,6 +11,8 @@ const (
 	door        Codetype = "door"
 	movement    Codetype = "movement"
 	interaction Codetype = "interaction"
+	enemy       Codetype = "enemy"
+	box 		Codetype = "box"
 )
 
 const (
@@ -28,6 +30,13 @@ const (
 	codeKey    = codeGoalDoor
 	codeHammer = codeGlassDoor
 	codeHand   = codeWoodDoor
+	codePortion = iota + 1 + codeHand
+	codeWoodSword
+	codeIronSword
+	codeWoodShield
+	codeLeatherRobe
+	codeLeatherPants
+	codeLeatherHat
 )
 
 const (
@@ -41,7 +50,20 @@ const (
 	codeOpen Interaction = iota + 1
 	codeBreak
 	codeUnlock
+	codeGet
+	codeAttack
+	codeRun
 	// codeClose
 	// codeLock
-	// codeGet
+)
+
+const (
+	codeSquirrel = iota + 1
+	codeRabbit
+	codeDeer
+)
+
+const (
+	codeOpenBox = iota + 1
+	codeCloseBox
 )

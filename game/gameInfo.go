@@ -7,19 +7,14 @@ type GameInfo struct {
 	playerName   string
 	playerCoords Coords
 	inventory    []Component
+	player       Player
 }
 
 func updatePlayerPlace(tempPlaceCoords Coords /* , tempPlace *Code */) {
-	/* currentPlace := getPlaceByCoords(playInfo.playerCoords)
-	playInfo.playerCoords = tempPlaceCoords
-
-	*currentPlace = codeFloor
-	*tempPlace = codePlayer */
-
-	playInfo.playerCoords = tempPlaceCoords
+	gameInfo.playerCoords = tempPlaceCoords
 }
 
-func (playInfo GameInfo) getAroundDoorCoords() (*Component, string) {
+func (playInfo GameInfo) getAroundDoorCoords() (*Block, string) {
 	coordsArray := getAroundCoords(playInfo.playerCoords)
 
 	for i, coords := range coordsArray {
@@ -34,7 +29,7 @@ func (playInfo GameInfo) getAroundDoorCoords() (*Component, string) {
 }
 
 func hasItem(item Component) bool {
-	for _, hasItem := range playInfo.inventory {
+	for _, hasItem := range gameInfo.inventory {
 		if hasItem.equals(item) {
 			return true
 		}
@@ -43,7 +38,7 @@ func hasItem(item Component) bool {
 }
 
 func printInventory() {
-	inventorys := playInfo.inventory
+	inventorys := gameInfo.inventory
 
 	if len(inventorys) < 2 {
 		return
@@ -51,7 +46,7 @@ func printInventory() {
 
 	fmt.Print("소지품 : ")
 
-	hand := item.getComponent(codeHand, true)
+	hand := item.getComponent(codeHand)
 	for i, inventory := range inventorys {
 		if i > 1 {
 			fmt.Print(", ")

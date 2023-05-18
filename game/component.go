@@ -3,14 +3,12 @@ package game
 type Component struct {
 	code     Code
 	codetype Codetype
-	passable bool
 }
 
-func (codetype Codetype) getComponent(code Code, passable bool) Component {
+func (codetype Codetype) getComponent(code Code) Component {
 	return Component{
 		code:     code,
 		codetype: codetype,
-		passable: passable,
 	}
 }
 
@@ -20,10 +18,6 @@ func (codetype Codetype) getComponent(code Code, passable bool) Component {
 
 func (component Component) getName() string {
 	return attributeMap[component].getName()
-}
-
-func (component Component) isOpen() bool {
-	return component.codetype == door && component.passable == true
 }
 
 func (directionCoords Coords) isPassable() bool {
@@ -41,8 +35,27 @@ func (component Component) isItem() bool {
 func (component Component) isDoor() bool {
 	return component.codetype == door
 }
+
+func (component Component) isEnemy() bool {
+	return component.codetype == enemy
+}
+
 func (component Component) isEmpty() bool {
 	return component == Component{}
+}
+
+func (prevComponent Component) ifNotEmpty(postComponent Component) (tooMany bool, component Component) {
+	empty := prevComponent.isEmpty()
+	tooMany = !empty
+
+	switch empty {
+	case true :
+		component = postComponent
+	case false :
+		component = prevComponent
+	}
+
+	return
 }
 
 func (component Component) equals(tempComponent Component) bool {

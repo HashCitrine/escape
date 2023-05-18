@@ -1,13 +1,13 @@
 package game
 
-func getPlace(y int, x int) *Component {
+func getPlace(y int, x int) *Block {
 	if y < 0 || x < 0 {
 		return nil
 	}
 	return &fieldArray[y][x]
 }
 
-func getPlaceByCoords(coords Coords) *Component {
+func getPlaceByCoords(coords Coords) *Block {
 	if checkOutFieldByCoords(coords) {
 		return nil
 	}

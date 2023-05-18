@@ -1,5 +1,7 @@
 package game
 
+import "strings"
+
 type Command string
 
 type Acting struct {
@@ -55,6 +57,11 @@ func initInteractionCommandMap() {
 		"부순": {codeBreak},
 		"깨":  {codeBreak},
 		"깬":  {codeBreak},
+
+		"줍": {codeGet},
+
+		"공격": {codeAttack},
+		"도망": {codeRun},
 	}
 }
 
@@ -96,3 +103,14 @@ func (act Movement) getDirectionInfo() (coords Coords, directionName string) {
 
 	return direction
 } */
+
+func GetInteraction(scan string) (interactionArray []Interaction) {
+	// var interaction Interaction
+	for command, interactions := range interactionCommandMap {
+		if strings.Contains(scan, string(command)) {
+			interactionArray = interactions
+		}
+	}
+
+	return
+}
