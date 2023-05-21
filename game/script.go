@@ -24,7 +24,7 @@ const (
 	passDoorScript            Fnarration = "고양이가 %s을 지나왔습니다.\n"
 	closeDoorScript           Fnarration = "%s이 닫혀 있다. 이대로는 나아갈 수 없습니다.\n"
 	moveScript                Fnarration = "고양이가 %s로 이동했습니다.\n"
-	findItmeScript            Fnarration = "%s가 떨어져 있습니다.\n"
+	findItmeScript            Fnarration = "%s(이)가 떨어져 있습니다.\n"
 	getItemScript             Fnarration = "고양이가 %s을 챙겼습니다.\n"
 	notHaveItemScript         Fnarration = "%s를 가지고 있지 않습니다.\n"
 	alreadyOpenDoorScript     Fnarration = "%s은 이미 열려있습니다. 지나갈 수 있습니다.\n"

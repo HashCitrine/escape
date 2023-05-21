@@ -61,7 +61,7 @@ func initInteractionCommandMap() {
 		"줍": {codeGet},
 
 		"공격": {codeAttack},
-		"도망": {codeRun},
+		// "도망": {codeRun},
 	}
 }
 

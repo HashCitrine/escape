@@ -10,8 +10,8 @@ func (block Block) isDoor() bool {
 	return len(block.parts) == 1 && block.parts[0].isDoor()
 }
 
-func (block Block) isOpen() bool {
-	return block.passable && block.isDoor()
+func (block *Block) isOpen() bool {
+	return (*block).passable && (*block).isDoor()
 }
 
 func (block Block) getDoorName() string {
@@ -30,9 +30,9 @@ func (block Block) getDoor() Component {
 	return Component{}
 }
 
-func (block Block) findItem() []Component {
+func (block *Block) findItem() []Component {
 	var result []Component
-	parts := block.parts
+	parts := (*block).parts
 
 	if len(parts) > 0 {
 		for _, component := range parts {

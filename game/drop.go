@@ -63,8 +63,9 @@ func InitDropItemMap() {
 	}
 }
 
-func (component Component) Drop() Component {
+func (component Component) Drop() {
 	dropTable := dropItemMap[component]
+	place := getPlaceByCoords(gameInfo.playerCoords)
 
 	rand.Seed(time.Now().UnixNano())
 	result := rand.Float64() * 100
@@ -73,19 +74,27 @@ func (component Component) Drop() Component {
 		result -= float64(drop.probability)
 
 		if result <= 0 {
-			return drop.item
+			dropItem := drop.item
+			componentArray := (*place).parts
+			(*place).parts = append(componentArray, dropItem)
+
+			// todo : 00 을 떨어뜨렸다. - script
+			return
 		}
 	}
 
-	return Component{}
+	return
 }
 
-func (block Block) pickUp(item Component) {
-	parts := block.parts
+func (block *Block) pickUp(item Component) {
+	parts := (*block).parts
 
-	for _, component := range parts {
+	for i, component := range parts {
 		if component == item {
 			gameInfo.inventory = append(gameInfo.inventory, item)
+			(*block).parts = append(parts[:i], parts[i+1:]...)
+
+			// todo : 00 아이템을 주웠다. - script
 			return
 		}
 	}

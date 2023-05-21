@@ -87,6 +87,11 @@ const (
 func (block *Block) combat(scan string) bool {
 	enemy := enemyMap[block]
 
+	if enemy.component.isEmpty()  {
+		// todo : 적이 없다. - script
+		return false
+	}
+
 	enemyOffence := enemy.common.offence
 	defense := player.getDefense()
 
@@ -107,6 +112,12 @@ func (block *Block) combat(scan string) bool {
 		enemy.hp -= playerOffence
 
 		// todo : playerOffence 만큼 달았다. - script
+
+		if enemy.hp <= 0 {
+			// todo : enenmy가 죽었다. - script
+			enemy.component.Drop()
+			return true
+		}
 	case commandShield:
 		defense += player.rightHand.getDefense() + player.leftHand.getDefense()
 	case commandRecovery:
