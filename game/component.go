@@ -1,5 +1,4 @@
 package game
-import "fmt"
 
 type Component struct {
 	code     Code
@@ -78,6 +77,7 @@ func (component Component) wear() {
 		if item == component {
 			noWear := Component{}
 			useItem(component)
+			wearScript.print(component.getName());
 
 			switch component.code {
 			case codeWoodSword, codeIronSword, codeWoodShield:

@@ -20,6 +20,7 @@ func init() {
 	initInteractionCommandMap()
 	InitDropItemMap()
 	initEnenyMap()
+	initEquipmentMap()
 	initPlayInfo(Coords{y: 11, x: 12}, Coords{y: 2, x: 0})
 }
 

@@ -18,7 +18,7 @@ const (
 	endScript      Narration = "밝은 빛이 보입니다. 당신의 고양이는 탈출에 성공했습니다."
 	deadScript Narration = "고양이가 더 이상 움직이지 않습니다. 당신은 동물학대범입니다."
 	questionScript Narration = "어떤 행동을 하시겠습니까?"
-	noDropScript Narration = "아이템을 떨어지지 않았습니다."
+	noDropScript Narration = "아이템이 떨어지지 않았습니다."
 )
 
 const (
@@ -39,9 +39,10 @@ const (
 	canNotFindAroundDoor Fnarration = "%s에 %s를 사용할 수 있을까? 확인해보자."
 	dropItemScript       Fnarration = "%s를 떨어뜨렸다."
 	findSomethingScript  Fnarration = "%s(이)가 있다."
-	attackedScript Fnarration = "고양이가 %d만큼 데미지를 입었다."
-	attackScript Fnarration = "고양이가 %d만큼 데미지를 줬다."
+	attackedScript Fnarration = "%s가 %d만큼 데미지를 입었다."
+	enemyInfoScript Fnarration = "%s의 HP : %d"
 	playerInfoScript Fnarration = "HP : %d"
+	wearScript Fnarration = "%s를 착용했다."
 )
 
 func print(script string) {

@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -117,8 +116,8 @@ func (block *Block) combat(code Interaction) bool {
 		blockEnemy.hp -= playerOffence
 		enemyMap[block] = blockEnemy
 
-		// todo : playerOffence 만큼 달았다. - script
-		attackScript.print(playerOffence)
+		attackedScript.print(blockEnemy.component.getName(), playerOffence)
+		enemyInfoScript.print(blockEnemy.component.getName(), blockEnemy.hp)
 
 		if blockEnemy.hp <= 0 {
 			// todo : enenmy가 죽었다. - script
@@ -146,8 +145,7 @@ func (block *Block) combat(code Interaction) bool {
 	}
 
 	player.charactor.hp -= enemyOffence
-	// todo : enemyOffence 만큼 체력이 달았다. - script
-	attackedScript.print(enemyOffence)
+	attackedScript.print("고양이", enemyOffence)
 	return true
 }
 

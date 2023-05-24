@@ -78,13 +78,12 @@ func (component Component) Drop() {
 			componentArray := (*place).parts
 			(*place).parts = append(componentArray, dropItem)
 
-			// todo : 00 을 떨어뜨렸다. - script
-
 			if dropItem.code == 0 {
 				noDropScript.print()
+				return
 			}
+
 			dropItemScript.print(dropItem.getName())
-			return
 		}
 	}
 
