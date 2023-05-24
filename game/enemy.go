@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -21,6 +22,7 @@ type Player struct {
 	head      Component
 	top       Component
 	pants     Component
+	shoes 	  Component
 	rightHand Component
 	leftHand  Component
 }
@@ -58,11 +60,14 @@ var enemyMap map[*Block]Enemy
 
 func initEnenyMap() {
 	enemyMap = map[*Block]Enemy{
-		getPlace(0, 0): squirrel,
+		getPlace(4, 8): squirrel,
+		getPlace(3, 6): squirrel,
 
 		getPlace(0, 0): rabbit,
+		getPlace(7, 6): rabbit,
 
 		getPlace(0, 0): deer,
+		getPlace(7, 2): deer,
 	}
 }
 
@@ -77,52 +82,60 @@ var player = Player{
 	},
 }
 
-const (
+/* const (
 	commandRun      Command = "도망"
 	commandAttack   Command = "공격"
 	commandShield   Command = "방어"
 	commandRecovery Command = "회복"
-)
+) */
 
-func (block *Block) combat(scan string) bool {
-	enemy := enemyMap[block]
+func (block *Block) combat(code Interaction) bool {
+	blockEnemy := enemyMap[block]
 
-	if enemy.component.isEmpty()  {
+	if blockEnemy.component.isEmpty() {
 		// todo : 적이 없다. - script
 		return false
 	}
 
-	enemyOffence := enemy.common.offence
+	enemyOffence := blockEnemy.common.offence
 	defense := player.getDefense()
 
-	switch Command(scan) {
-	case commandRun:
+	switch code {
+	case codeRun:
 		rand.Seed(time.Now().UnixNano())
 		result := rand.Float64() * 100
 
 		if result > 0.5 {
 			return false
 		}
-	case commandAttack:
+	case codeAttack:
 		playerOffence := player.charactor.common.offence
-		rightAttack := gameInfo.player.rightHand.getOffense()
-		leftAttack := gameInfo.player.leftHand.getOffense()
+		rightAttack := player.rightHand.getOffense()
+		leftAttack := player.leftHand.getOffense()
 
-		playerOffence += playerOffence + rightAttack + leftAttack
-		enemy.hp -= playerOffence
+		playerOffence += rightAttack + leftAttack
+		blockEnemy.hp -= playerOffence
+		enemyMap[block] = blockEnemy
 
 		// todo : playerOffence 만큼 달았다. - script
+		attackScript.print(playerOffence)
 
-		if enemy.hp <= 0 {
+		if blockEnemy.hp <= 0 {
 			// todo : enenmy가 죽었다. - script
-			enemy.component.Drop()
+			blockEnemy.component.Drop()
+			parts := (*block).parts
+			for i, part := range parts {
+				if part == blockEnemy.component {
+					(*block).parts = append(parts[:i], parts[i+1:]...)
+				}
+			}
 			return true
 		}
-	case commandShield:
+	case codeShield:
 		defense += player.rightHand.getDefense() + player.leftHand.getDefense()
-	case commandRecovery:
+	case codeRecovery:
 		if useItem(item.getComponent(codePortion)) {
-			enemy.hp += 30
+			blockEnemy.hp += 30
 		}
 	}
 
@@ -134,7 +147,7 @@ func (block *Block) combat(scan string) bool {
 
 	player.charactor.hp -= enemyOffence
 	// todo : enemyOffence 만큼 체력이 달았다. - script
-
+	attackedScript.print(enemyOffence)
 	return true
 }
 

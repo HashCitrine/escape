@@ -32,42 +32,49 @@ const (
 )
 
 var floorPlace = []Coords{
-	{0, 5},
-	{1, 5},
-	{2, 0}, /* {2, 1}, */ {2, 2}, {2, 5},
-	{3, 2}, {3, 3}, /* {3, 4}, */ {3, 5}, {3, 6}, {3, 7}, {3, 8}, {3, 9}, /* {3, 10}, */ {3, 11},
-	{4, 2}, {4, 5}, {4, 7},
-	{5, 2}, {5, 5}, {5, 7},
-	/* {6, 2}, */ {6, 5}, {6, 7},
-	{7, 3}, {7, 3}, {7, 4}, {7, 5}, {7, 7},
-	{8, 7}, {8, 8}, {8, 9}, {8, 10}, {8, 11},
-	{9, 7}, {9, 11},
-	/* {10, 7}, */ {10, 11},
-	{11, 7}, {11, 11},
+	{0, 6},
+	{1, 6},
+	{2, 0}, /* {2, 1}, */ {2, 2}, {2, 6},
+	{3, 2}, {3, 4}, /* {3, 4}, */ {3, 6}, {3, 7}, {3, 8}, {3, 9}, {3, 10}, /* {3, 10}, */ {3, 12},
+	{4, 2}, {4, 6}, {4, 8},
+	{5, 2}, {5, 6}, {5, 8},
+	/* {6, 2}, */ {6, 6}, {6, 8},
+	{7, 3}, {7, 4}, {7, 5}, {7, 6}, {7, 8},
+	{8, 8}, {8, 9}, {8, 10}, {8, 11}, {8, 12},
+	{9, 8}, {9, 12},
+	/* {10, 7}, */ {10, 12},
+	{11, 8}, {11, 12},
 }
 
 func initAttributeMap() {
 	// Door
 	goalDoor := getAttribute(getStringArray("회색문", "회색"), "&", getPlace(2, 1))
-	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "=", getPlace(6, 2), getPlace(3, 10))
-	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "◐", getPlace(3, 4), getPlace(10, 7))
+	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "=", getPlace(6, 2), getPlace(3, 11))
+	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "◐", getPlace(3, 5), getPlace(10, 8))
 
 	// Item
 	key := getAttribute(getStringArray("열쇠", "키"), keyIcon, nil)
-	hammer := getAttribute(getStringArray("망치", "해머", "함마"), hammerIcon, getPlace(0, 5), getPlace(8, 7))
+	hammer := getAttribute(getStringArray("망치", "해머", "함마"), hammerIcon, getPlace(0, 6), getPlace(8, 8))
 	hand := getAttribute(getStringArray("손"), "", nil)
-	woodSword := getAttribute(getStringArray("목검"), "", getPlace(8, 11))
-	portion := getAttribute(getStringArray("회복약", "포션"), "", getPlace(3, 7))
+
+	woodSword := getAttribute(getStringArray("목검"), "", getPlace(8, 12))
+	ironSword := getAttribute(getStringArray("철검"), "", nil)
+	woodShield :=  getAttribute(getStringArray("나무 방패"), "", nil)
+	leatherRobe :=  getAttribute(getStringArray("가죽옷"), "", nil)
+	leatherPants :=  getAttribute(getStringArray("가죽바지"), "", nil)
+	leatherShoes :=  getAttribute(getStringArray("가죽신발"), "", nil)
+	portion := getAttribute(getStringArray("회복약", "포션"), "", getPlace(3, 8))
 
 	/* openGoalDoor := getAttribute(goalDoor.commands, "%", nil)
 	openGlassDoor := getAttribute(glassDoor.commands, "≠", nil)
 	openWoodDoor := getAttribute(woodDoor.commands, "○", nil) */
 
-	squirrel := getAttribute(getStringArray("다람쥐", "람쥐", "쥐"), "", getPlace(4, 7), getPlace(3, 5))
-	rabbit := getAttribute(getStringArray("토끼"), "", getPlace(7, 5))
+	squirrel := getAttribute(getStringArray("다람쥐", "람쥐", "쥐"), "", getPlace(4, 8), getPlace(3, 6))
+	rabbit := getAttribute(getStringArray("토끼"), "", getPlace(7, 6))
 	deer := getAttribute(getStringArray("사슴", "시슴"), "", getPlace(7, 2))
 
-	boxFloor := getAttribute(getStringArray("상자", "박스"), "", getPlace(0, 5), getPlace(3, 3), getPlace(3, 11), getPlace(11, 7))
+	closeBoxFloor := getAttribute(getStringArray("상자", "박스"), "", getPlace(0, 6), getPlace(3, 4), getPlace(3, 12), getPlace(11, 8))
+	openBox := getAttribute(getStringArray("닫힌 상자", "닫힌 박스"), "", )
 
 	attributeMap = map[Component]Attribute{
 		door.getComponent(codeGoalDoor):  goalDoor,
@@ -77,7 +84,13 @@ func initAttributeMap() {
 		item.getComponent(codeKey):    key,
 		item.getComponent(codeHammer): hammer,
 		item.getComponent(codeHand):   hand,
+
 		item.getComponent(codeWoodSword): woodSword,
+		item.getComponent(codeIronSword): ironSword,
+		item.getComponent(codeWoodShield): woodShield,
+		item.getComponent(codeLeatherRobe): leatherRobe,
+		item.getComponent(codeLeatherPants): leatherPants,
+		item.getComponent(codeLeatherShoes): leatherShoes,
 		item.getComponent(codePortion) : portion,
 
 		enemy.getComponent(codeSquirrel): squirrel,
@@ -88,7 +101,8 @@ func initAttributeMap() {
 		door.getComponent(codeGlassDoor): openGlassDoor,
 		door.getComponent(codeWoodDoor):  openWoodDoor, */
 
-		box.getComponent(codeCloseBox): boxFloor,
+		box.getComponent(codeCloseBox): closeBoxFloor,
+		box.getComponent(codeOpenBox): openBox,
 	}
 }
 

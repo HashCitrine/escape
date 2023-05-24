@@ -12,7 +12,7 @@ const (
 	movement    Codetype = "movement"
 	interaction Codetype = "interaction"
 	enemy       Codetype = "enemy"
-	box 		Codetype = "box"
+	box         Codetype = "box"
 )
 
 const (
@@ -27,16 +27,16 @@ const (
 )
 
 const (
-	codeKey    = codeGoalDoor
-	codeHammer = codeGlassDoor
-	codeHand   = codeWoodDoor
+	codeKey     = codeGoalDoor
+	codeHammer  = codeGlassDoor
+	codeHand    = codeWoodDoor
 	codePortion = iota + 1 + codeHand
 	codeWoodSword
 	codeIronSword
 	codeWoodShield
 	codeLeatherRobe
 	codeLeatherPants
-	codeLeatherHat
+	codeLeatherShoes
 )
 
 const (
@@ -53,6 +53,9 @@ const (
 	codeGet
 	codeAttack
 	codeRun
+	codeShield
+	codeRecovery
+	codeWear
 	// codeClose
 	// codeLock
 )

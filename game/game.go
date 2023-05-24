@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var fieldArray [12][12]Block
+var fieldArray [12][13]Block
 var gameInfo GameInfo
 
 // var endGame = false
@@ -18,7 +18,9 @@ func init() {
 	// initActMap()
 	initMovementCommandMap()
 	initInteractionCommandMap()
-	initPlayInfo(Coords{y: 11, x: 11}, Coords{y: 2, x: 0})
+	InitDropItemMap()
+	initEnenyMap()
+	initPlayInfo(Coords{y: 11, x: 12}, Coords{y: 2, x: 0})
 }
 
 func initField() {
@@ -43,6 +45,15 @@ func initPlayInfo(currentCoords Coords, goalCoords Coords) {
 		goalCoords:   goalCoords,
 		playerCoords: currentCoords,
 		inventory:    []Component{item.getComponent(codeHand)},
+		/* player: Player{
+			charactor: Charactor{
+				hp: 50,
+				common: TacticalCommon{
+					offence: 3,
+					defense: 0,
+				},
+			},
+		}, */
 	}
 
 	return
@@ -60,8 +71,10 @@ func Play() {
 			break
 		}
 		clearConsole.print()
+		if Action(scan) {
+			continue
+		}
 		Move(scan)
-		Action(scan)
 	}
 }
 
@@ -133,7 +146,6 @@ func PrintScript() {
 		startScript.print()
 	} */
 
-
 	/* if endGame {
 		endScript.print()
 		return
@@ -148,9 +160,10 @@ func PrintScript() {
 
 	printInventory()
 	questionScript.print()
+	playerInfoScript.print(player.charactor.hp)
 }
 
-func Action(scan string) {
+func Action(scan string) bool {
 	commandDoor, commandItem := GetDoorAndItem(scan)
 	interactionArray := GetInteraction(scan)
 	var interactionCode Interaction
@@ -161,37 +174,47 @@ func Action(scan string) {
 	place := getPlaceByCoords(gameInfo.playerCoords)
 
 	switch interactionCode {
-	case codeAttack :
+	case codeWear :
+		commandItem.wear()
+		return true
+	case codeAttack, codeRun, codeShield, codeRecovery:
 		// place := getPlaceByCoords(gameInfo.playerCoords)
 		/* combatResult := place.combat(scan)
-	
+
 		if combatResult {
 			return
 		} */
 
-		place.combat(scan)
-		return
-	case codeGet :
+		place.combat(interactionCode)
+		return true
+	case codeGet:
 		if commandItem.isEmpty() {
 			// todo : 무슨 아이템을 주울까요? - script
 
 			// fieldItems := place.findItem()
 			// todo : item이 바닥에 있다. - script
-			return 
-		}	
+			return true
+		}
 
 		place.pickUp(commandItem)
-		return
-	case codeOpen :
+		return true
+	case codeOpen:
 		if len(place.parts) <= 0 {
 			break
 		}
-		part := place.parts[0]
-		box := box.getComponent(0)
 
-		if part == box {
-			box.Drop()
-			return
+		part := place.parts[0]
+		closeBox := box.getComponent(codeCloseBox)
+		openBox := box.getComponent(codeOpenBox)
+
+		if part == closeBox {
+			closeBox.Drop()
+			place.parts[0] = openBox
+			return true
+		}
+
+		if part == openBox {
+			openBoxScript.print()
 		}
 	}
 
@@ -230,14 +253,14 @@ func Action(scan string) {
 	if !commandDoor.isEmpty() && !commandItem.isEmpty() {
 		if ifDoor != nil && ifDoorIsOpen {
 			alreadyOpenDoorScript.print((*ifDoor).getDoorName())
-			return
+			return true
 		}
 
 		aroundDoor, _ := gameInfo.getAroundDoorCoords()
 
 		if aroundDoor == nil {
 			canNotFindAroundDoor.print(commandDoor.getName(), commandItem.getName())
-			return
+			return true
 		}
 
 		canOpenDoor := commandDoor.tryOpenDoor(commandItem)
@@ -249,11 +272,11 @@ func Action(scan string) {
 						// interaction = tempInteractionCode
 						useItemToDoorScript.print(commandItem.getName(), commandDoor.getName())
 						(*aroundDoor).passable = true
-						return
+						return true
 					}
 				}
 			} else {
-				return
+				return true
 			}
 
 			/* if interaction.isCanDo(commandDoor, commandItem) {
@@ -263,11 +286,13 @@ func Action(scan string) {
 			} */
 
 			doNotActToDoorScript.print(commandDoor.getName())
-			return
+			return true
 		}
 
 		canNotUseItemToDoorScript.print(commandItem.getName(), commandDoor.getName())
 	}
+
+	return false
 }
 
 func Move(scan string) {
@@ -298,6 +323,7 @@ func Move(scan string) {
 		if directionCoords == gameInfo.goalCoords {
 			// endGame = true
 			updatePlayerPlace(directionCoords /* , directionPlace */)
+			directionPlace.printParts()
 			return
 		}
 
@@ -308,6 +334,7 @@ func Move(scan string) {
 		directionPlace = getPlaceByCoords(directionCoords)
 
 		updatePlayerPlace(directionCoords /* , directionPlace */)
+		directionPlace.printParts()
 		return
 	}
 
@@ -319,25 +346,30 @@ func Move(scan string) {
 
 	moveScript.print(directionName)
 
-	items := directionPlace.findItem()
+	/* items := directionPlace.findItem()
 	if len(items) > 0 {
 		for _, item := range items {
 			itemName := item.getName()
 			findItmeScript.print(itemName)
 		}
-
-		// todo : 아이템 줍기 별도 구현 필요
-		// getItemScript.print(itemName)
-		// inventory := &playInfo.inventory
-		// *inventory = append(*inventory, (*directionPlace))
-		// (*directionPlace) = Component{passable: true}
-	}
+	} */
 
 	// 현재 위치 업데이트
 	updatePlayerPlace(directionCoords /* , directionPlace */)
+	directionPlace.printParts()
 }
 
-
 func isEnd() bool {
-	return gameInfo.goalCoords == gameInfo.playerCoords
+
+	if player.charactor.hp <= 0 {
+		deadScript.print()
+		return true
+	}
+
+	if gameInfo.goalCoords == gameInfo.playerCoords {
+		endScript.print()
+		return true
+	}
+
+	return false
 }

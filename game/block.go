@@ -44,3 +44,11 @@ func (block *Block) findItem() []Component {
 
 	return result
 }
+
+func (block *Block) printParts() {
+	parts := block.parts
+
+	for _, part := range parts {
+		findSomethingScript.print(part.getName())
+	}
+}

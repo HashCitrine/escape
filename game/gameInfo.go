@@ -7,7 +7,7 @@ type GameInfo struct {
 	playerName   string
 	playerCoords Coords
 	inventory    []Component
-	player       Player
+	// player       Player
 }
 
 func updatePlayerPlace(tempPlaceCoords Coords /* , tempPlace *Code */) {

@@ -10,12 +10,15 @@ const (
 	clearConsole              Script = "\033[H\033[2J"
 	doNotTooManyCommandScript Script = "한 번에 하나씩 행동할 수 있습니다."
 	needActAnythingScript     Script = "무엇이든 행동해야 합니다."
+	openBoxScript             Script = "상자가 이미 열려있습니다."
 )
 
 const (
 	startScript    Narration = "당신의 고양이가 미로의 함정에 빠졌습니다. 빠져나갈 수 있도록 지시를 내려야 합니다."
 	endScript      Narration = "밝은 빛이 보입니다. 당신의 고양이는 탈출에 성공했습니다."
+	deadScript Narration = "고양이가 더 이상 움직이지 않습니다. 당신은 동물학대범입니다."
 	questionScript Narration = "어떤 행동을 하시겠습니까?"
+	noDropScript Narration = "아이템을 떨어지지 않았습니다."
 )
 
 const (
@@ -24,7 +27,7 @@ const (
 	passDoorScript            Fnarration = "고양이가 %s을 지나왔습니다.\n"
 	closeDoorScript           Fnarration = "%s이 닫혀 있다. 이대로는 나아갈 수 없습니다.\n"
 	moveScript                Fnarration = "고양이가 %s로 이동했습니다.\n"
-	findItmeScript            Fnarration = "%s(이)가 떨어져 있습니다.\n"
+	// findItmeScript            Fnarration = "%s(이)가 떨어져 있습니다.\n"
 	getItemScript             Fnarration = "고양이가 %s을 챙겼습니다.\n"
 	notHaveItemScript         Fnarration = "%s를 가지고 있지 않습니다.\n"
 	alreadyOpenDoorScript     Fnarration = "%s은 이미 열려있습니다. 지나갈 수 있습니다.\n"
@@ -34,6 +37,11 @@ const (
 	doNotActByItemScript      Fnarration = "%s를 가지고 있습니다."
 	// doNotActByDoorScript      Fnarration = "%s을 열 방법을 찾아야 한다."
 	canNotFindAroundDoor Fnarration = "%s에 %s를 사용할 수 있을까? 확인해보자."
+	dropItemScript       Fnarration = "%s를 떨어뜨렸다."
+	findSomethingScript  Fnarration = "%s(이)가 있다."
+	attackedScript Fnarration = "고양이가 %d만큼 데미지를 입었다."
+	attackScript Fnarration = "고양이가 %d만큼 데미지를 줬다."
+	playerInfoScript Fnarration = "HP : %d"
 )
 
 func print(script string) {

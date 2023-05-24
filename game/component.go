@@ -1,4 +1,5 @@
 package game
+import "fmt"
 
 type Component struct {
 	code     Code
@@ -49,9 +50,9 @@ func (prevComponent Component) ifNotEmpty(postComponent Component) (tooMany bool
 	tooMany = !empty
 
 	switch empty {
-	case true :
+	case true:
 		component = postComponent
-	case false :
+	case false:
 		component = prevComponent
 	}
 
@@ -68,4 +69,45 @@ func (tempDoor Component) tryOpenDoor(tempItem Component) bool {
 
 func (interaction Interaction) isCanDo(door Component, item Component) bool {
 	return Code(interaction) == door.code && door.code == item.code
+}
+
+func (component Component) wear() {
+	inventory := gameInfo.inventory
+
+	for _, item := range inventory {
+		if item == component {
+			noWear := Component{}
+			useItem(component)
+
+			switch component.code {
+			case codeWoodSword, codeIronSword, codeWoodShield:
+				if player.rightHand == noWear {
+					player.rightHand = component
+					return
+				}
+
+				if player.leftHand != noWear {
+					gameInfo.inventory = append(inventory, player.leftHand)
+				}
+
+				player.leftHand = component
+			case codeLeatherRobe:
+				if player.top != noWear {
+					gameInfo.inventory = append(inventory, player.top)
+				}
+
+				player.top = component
+			case codeLeatherPants:
+				if player.pants != noWear {
+					gameInfo.inventory = append(inventory, player.pants)
+				}
+				player.pants = component
+			case codeLeatherShoes:
+				if player.shoes != noWear {
+					gameInfo.inventory = append(inventory, player.shoes)
+				}
+				player.shoes = component
+			}
+		}
+	}
 }

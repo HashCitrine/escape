@@ -20,7 +20,7 @@ func InitDropItemMap() {
 	// woodShield := item.getComponent(codeWoodShield)
 	leatherRobeItem := item.getComponent(codeLeatherRobe)
 	leatherPantsItem := item.getComponent(codeLeatherPants)
-	leatherHatItem := item.getComponent(codeLeatherHat)
+	leatherHatItem := item.getComponent(codeLeatherShoes)
 
 	portion1 := DropItem{item: portionItem, amount: 1, probability: 15}
 	portion2 := DropItem{item: portionItem, amount: 2, probability: 10}
@@ -56,7 +56,7 @@ func InitDropItemMap() {
 	}
 
 	dropItemMap = map[Component][]DropItem{
-		box.getComponent(0):                    boxDrop,
+		box.getComponent(codeCloseBox):         boxDrop,
 		enemy.getComponent(Code(codeSquirrel)): squirrelDrop,
 		enemy.getComponent(Code(codeRabbit)):   rabbitDrop,
 		enemy.getComponent(Code(codeDeer)):     deerDrop,
@@ -79,6 +79,11 @@ func (component Component) Drop() {
 			(*place).parts = append(componentArray, dropItem)
 
 			// todo : 00 을 떨어뜨렸다. - script
+
+			if dropItem.code == 0 {
+				noDropScript.print()
+			}
+			dropItemScript.print(dropItem.getName())
 			return
 		}
 	}
