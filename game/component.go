@@ -71,13 +71,13 @@ func (interaction Interaction) isCanDo(door Component, item Component) bool {
 }
 
 func (component Component) wear() {
-	inventory := gameInfo.inventory
+	inventory := player.inventory
 
 	for _, item := range inventory {
 		if item == component {
 			noWear := Component{}
 			useItem(component)
-			wearScript.print(component.getName());
+			wearScript.print(component.getName())
 
 			switch component.code {
 			case codeWoodSword, codeIronSword, codeWoodShield:
@@ -87,24 +87,24 @@ func (component Component) wear() {
 				}
 
 				if player.leftHand != noWear {
-					gameInfo.inventory = append(inventory, player.leftHand)
+					player.inventory = append(inventory, player.leftHand)
 				}
 
 				player.leftHand = component
 			case codeLeatherRobe:
 				if player.top != noWear {
-					gameInfo.inventory = append(inventory, player.top)
+					player.inventory = append(inventory, player.top)
 				}
 
 				player.top = component
 			case codeLeatherPants:
 				if player.pants != noWear {
-					gameInfo.inventory = append(inventory, player.pants)
+					player.inventory = append(inventory, player.pants)
 				}
 				player.pants = component
 			case codeLeatherShoes:
 				if player.shoes != noWear {
-					gameInfo.inventory = append(inventory, player.shoes)
+					player.inventory = append(inventory, player.shoes)
 				}
 				player.shoes = component
 			}

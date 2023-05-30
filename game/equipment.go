@@ -1,16 +1,16 @@
 package game
 
-var equipmentMap map[Component]TacticalCommon
+var equipmentMap map[Component]Stat
 
 func initEquipmentMap() {
-	woodSword := TacticalCommon{offence: 5, defense: 0}
-	ironSword := TacticalCommon{offence: 10, defense: 0}
-	woodShield := TacticalCommon{offence: 0, defense: 10}
-	leatherRobe := TacticalCommon{offence: 0, defense: 6}
-	leatherPants := TacticalCommon{offence: 0, defense: 4}
-	leatherShoes := TacticalCommon{offence: 0, defense: 3}
+	woodSword := Stat{offence: 5, defense: 0}
+	ironSword := Stat{offence: 10, defense: 0}
+	woodShield := Stat{offence: 0, defense: 10}
+	leatherRobe := Stat{offence: 0, defense: 6}
+	leatherPants := Stat{offence: 0, defense: 4}
+	leatherShoes := Stat{offence: 0, defense: 3}
 
-	equipmentMap = map[Component]TacticalCommon{
+	equipmentMap = map[Component]Stat{
 		item.getComponent(codeWoodSword):    woodSword,
 		item.getComponent(codeIronSword):    ironSword,
 		item.getComponent(codeWoodShield):   woodShield,
@@ -20,7 +20,7 @@ func initEquipmentMap() {
 	}
 }
 
-func (component Component) getEquipmentInfo() TacticalCommon {
+func (component Component) getEquipmentInfo() Stat {
 	return equipmentMap[component]
 }
 

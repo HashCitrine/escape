@@ -1,14 +1,14 @@
 package game
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 var fieldArray [12][13]Block
-var gameInfo GameInfo
+var player Player
 
 // var endGame = false
 
@@ -21,7 +21,7 @@ func init() {
 	InitDropItemMap()
 	initEnenyMap()
 	initEquipmentMap()
-	initPlayInfo(Coords{y: 11, x: 12}, Coords{y: 2, x: 0})
+	initPlayer(Coords{y: 11, x: 12}, Coords{y: 2, x: 0})
 }
 
 func initField() {
@@ -41,36 +41,19 @@ func initField() {
 	setAttributeToField()
 }
 
-func initPlayInfo(currentCoords Coords, goalCoords Coords) {
-	gameInfo = GameInfo{
-		goalCoords:   goalCoords,
-		playerCoords: currentCoords,
-		inventory:    []Component{item.getComponent(codeHand)},
-		/* player: Player{
-			charactor: Charactor{
-				hp: 50,
-				common: TacticalCommon{
-					offence: 3,
-					defense: 0,
-				},
-			},
-		}, */
-	}
-
-	return
-}
-
 func Play() {
 	// initGame()
 	// clearConsole.print()
 	for {
 		DrawMap()
-		PrintScript()
 
-		scan := Scan()
 		if isEnd() {
 			break
+		} else {
+			PrintScript()
 		}
+
+		scan := Scan()
 		clearConsole.print()
 		if Action(scan) {
 			continue
@@ -79,14 +62,8 @@ func Play() {
 	}
 }
 
-func Scan() (scan string) {
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	return scanner.Text()
-}
-
 func DrawMap() {
-	player := gameInfo.playerCoords
+	player := player.currentCoords
 
 	for i := 0; i < len(fieldArray); i++ {
 		var tempArr = fieldArray[i]
@@ -152,7 +129,7 @@ func PrintScript() {
 		return
 	} */
 
-	aroundDoor, doorSideDirection := gameInfo.getAroundDoorCoords()
+	aroundDoor, doorSideDirection := player.getAroundDoorCoords()
 	if aroundDoor != nil {
 		doorName := (*aroundDoor).getDoorName()
 		lookAtTheDoorscript.print(doorSideDirection, doorName)
@@ -161,7 +138,7 @@ func PrintScript() {
 
 	printInventory()
 	questionScript.print()
-	playerInfoScript.print(player.charactor.hp)
+	playerInfoScript.print(player.hp)
 }
 
 func Action(scan string) bool {
@@ -172,10 +149,12 @@ func Action(scan string) bool {
 	if len(interactionArray) > 0 {
 		interactionCode = interactionArray[0]
 	}
-	place := getPlaceByCoords(gameInfo.playerCoords)
+	place := getPlaceByCoords(player.currentCoords)
+
+	fmt.Println("commandDoor, commandItem, interactionCode : ", commandDoor, commandItem, interactionCode)
 
 	switch interactionCode {
-	case codeWear :
+	case codeWear:
 		commandItem.wear()
 		return true
 	case codeAttack, codeRun, codeShield, codeRecovery:
@@ -229,7 +208,7 @@ func Action(scan string) bool {
 	} */
 
 	// door
-	ifDoor, _ := gameInfo.getAroundDoorCoords()
+	ifDoor, _ := player.getAroundDoorCoords()
 	ifDoorIsOpen := ifDoor != nil && (*ifDoor).isOpen()
 
 	if commandDoor.code == codeWoodDoor && commandItem.isEmpty() {
@@ -257,7 +236,7 @@ func Action(scan string) bool {
 			return true
 		}
 
-		aroundDoor, _ := gameInfo.getAroundDoorCoords()
+		aroundDoor, _ := player.getAroundDoorCoords()
 
 		if aroundDoor == nil {
 			canNotFindAroundDoor.print(commandDoor.getName(), commandItem.getName())
@@ -312,7 +291,7 @@ func Move(scan string) {
 	moveCoords, directionName := movement.getDirectionInfo()
 	// directionName := movement.getDirectionName()
 
-	directionCoords := newCoords(gameInfo.playerCoords, moveCoords)
+	directionCoords := newCoords(player.currentCoords, moveCoords)
 	if !directionCoords.isPassable() {
 		blankScript.print(directionName)
 		return
@@ -321,7 +300,7 @@ func Move(scan string) {
 	directionPlace := getPlaceByCoords(directionCoords)
 
 	if (*directionPlace).isOpen() {
-		if directionCoords == gameInfo.goalCoords {
+		if directionCoords == player.goalCoords {
 			// endGame = true
 			updatePlayerPlace(directionCoords /* , directionPlace */)
 			directionPlace.printParts()
@@ -362,15 +341,76 @@ func Move(scan string) {
 
 func isEnd() bool {
 
-	if player.charactor.hp <= 0 {
+	if player.hp <= 0 {
 		deadScript.print()
 		return true
 	}
 
-	if gameInfo.goalCoords == gameInfo.playerCoords {
+	if player.goalCoords == player.currentCoords {
 		endScript.print()
 		return true
 	}
 
 	return false
+}
+
+func (block *Block) combat(code Interaction) bool {
+	blockEnemy := enemyMap[block]
+
+	if blockEnemy.component.isEmpty() {
+		// todo : 적이 없다. - script
+		return false
+	}
+
+	enemyOffence := blockEnemy.common.offence
+	defense := player.getDefense()
+
+	switch code {
+	case codeRun:
+		rand.Seed(time.Now().UnixNano())
+		result := rand.Float64() * 100
+
+		if result > 0.5 {
+			return false
+		}
+	case codeAttack:
+		playerOffence := player.common.offence
+		rightAttack := player.rightHand.getOffense()
+		leftAttack := player.leftHand.getOffense()
+
+		playerOffence += rightAttack + leftAttack
+		blockEnemy.hp -= playerOffence
+		enemyMap[block] = blockEnemy
+
+		attackedScript.print(blockEnemy.component.getName(), playerOffence)
+		enemyInfoScript.print(blockEnemy.component.getName(), blockEnemy.hp)
+
+		if blockEnemy.hp <= 0 {
+			// todo : enenmy가 죽었다. - script
+			blockEnemy.component.Drop()
+			parts := (*block).parts
+			for i, part := range parts {
+				if part == blockEnemy.component {
+					(*block).parts = append(parts[:i], parts[i+1:]...)
+				}
+			}
+			return true
+		}
+	case codeShield:
+		defense += player.rightHand.getDefense() + player.leftHand.getDefense()
+	case codeRecovery:
+		if useItem(item.getComponent(codePortion)) {
+			blockEnemy.hp += 30
+		}
+	}
+
+	enemyOffence -= defense
+
+	if enemyOffence < 0 {
+		enemyOffence = 0
+	}
+
+	player.hp -= enemyOffence
+	attackedScript.print("고양이", enemyOffence)
+	return true
 }

@@ -63,7 +63,7 @@ func initAttributeMap() {
 	leatherRobe :=  getAttribute(getStringArray("가죽옷"), "", nil)
 	leatherPants :=  getAttribute(getStringArray("가죽바지"), "", nil)
 	leatherShoes :=  getAttribute(getStringArray("가죽신발"), "", nil)
-	portion := getAttribute(getStringArray("회복약", "포션"), "", getPlace(3, 8))
+	portion := getAttribute(getStringArray("포션"), "", getPlace(3, 8))
 
 	/* openGoalDoor := getAttribute(goalDoor.commands, "%", nil)
 	openGlassDoor := getAttribute(glassDoor.commands, "≠", nil)

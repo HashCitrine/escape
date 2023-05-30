@@ -1,5 +1,10 @@
 package game
 
+import (
+	"bufio"
+	"os"
+)
+
 func getPlace(y int, x int) *Block {
 	if y < 0 || x < 0 {
 		return nil
@@ -21,4 +26,10 @@ func checkOutFieldByCoords(coords Coords) bool {
 		return true
 	}
 	return false
+}
+
+func Scan() (scan string) {
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	return scanner.Text()
 }

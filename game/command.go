@@ -66,6 +66,7 @@ func initInteractionCommandMap() {
 		"회복": {codeRecovery},
 
 		"착용": {codeWear},
+		"장착": {codeWear},
 		"입기": {codeWear},
 	}
 }

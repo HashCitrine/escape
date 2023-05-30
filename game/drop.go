@@ -65,7 +65,7 @@ func InitDropItemMap() {
 
 func (component Component) Drop() {
 	dropTable := dropItemMap[component]
-	place := getPlaceByCoords(gameInfo.playerCoords)
+	place := getPlaceByCoords(player.currentCoords)
 
 	rand.Seed(time.Now().UnixNano())
 	result := rand.Float64() * 100
@@ -95,7 +95,7 @@ func (block *Block) pickUp(item Component) {
 
 	for i, component := range parts {
 		if component == item {
-			gameInfo.inventory = append(gameInfo.inventory, item)
+			player.inventory = append(player.inventory, item)
 			(*block).parts = append(parts[:i], parts[i+1:]...)
 
 			// todo : 00 아이템을 주웠다. - script
@@ -113,10 +113,10 @@ func opening(interaction Interaction, door Component, item Component) bool {
 }
 
 func useItem(item Component) bool {
-	inventory := gameInfo.inventory
+	inventory := player.inventory
 	for i, haveItem := range inventory {
 		if item == haveItem {
-			gameInfo.inventory = append(inventory[:i], inventory[i+1:]...)
+			player.inventory = append(inventory[:i], inventory[i+1:]...)
 			return true
 		}
 	}
