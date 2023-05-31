@@ -39,7 +39,7 @@ func (block *Block) findItem() []Component {
 			if component.codetype == item {
 				result = append(result, component)
 			}
-		} 
+		}
 	}
 
 	return result

@@ -43,7 +43,9 @@ func initField() {
 
 func Play() {
 	// initGame()
-	// clearConsole.print()
+	clearConsole.print()
+	startScript.print()
+
 	for {
 		DrawMap()
 
@@ -119,10 +121,6 @@ func DrawMap() {
 func PrintScript() {
 	fmt.Println()
 	fmt.Println()
-	/* currentPlace := getPlaceByCoords(playInfo.playerCoords)
-	if currentPlace == attributeMap[codePlayer].place[0] {
-		startScript.print()
-	} */
 
 	/* if endGame {
 		endScript.print()
@@ -137,6 +135,7 @@ func PrintScript() {
 	}
 
 	printInventory()
+	printEquipment()
 	questionScript.print()
 	playerInfoScript.print(player.hp)
 }
@@ -150,8 +149,6 @@ func Action(scan string) bool {
 		interactionCode = interactionArray[0]
 	}
 	place := getPlaceByCoords(player.currentCoords)
-
-	fmt.Println("commandDoor, commandItem, interactionCode : ", commandDoor, commandItem, interactionCode)
 
 	switch interactionCode {
 	case codeWear:
@@ -342,11 +339,13 @@ func Move(scan string) {
 func isEnd() bool {
 
 	if player.hp <= 0 {
+		fmt.Println()
 		deadScript.print()
 		return true
 	}
 
 	if player.goalCoords == player.currentCoords {
+		fmt.Println()
 		endScript.print()
 		return true
 	}

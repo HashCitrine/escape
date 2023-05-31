@@ -48,9 +48,9 @@ var floorPlace = []Coords{
 
 func initAttributeMap() {
 	// Door
-	goalDoor := getAttribute(getStringArray("회색문", "회색"), "&", getPlace(2, 1))
-	glassDoor := getAttribute(getStringArray("유리문", "유리", "하늘"), "=", getPlace(6, 2), getPlace(3, 11))
-	woodDoor := getAttribute(getStringArray("나무문", "나무", "갈색"), "◐", getPlace(3, 5), getPlace(10, 8))
+	goalDoor := getAttribute(getStringArray("회색문"), "&", getPlace(2, 1))
+	glassDoor := getAttribute(getStringArray("유리문"), "=", getPlace(6, 2), getPlace(3, 11))
+	woodDoor := getAttribute(getStringArray("나무문"), "◐", getPlace(3, 5), getPlace(10, 8))
 
 	// Item
 	key := getAttribute(getStringArray("열쇠", "키"), keyIcon, nil)
@@ -75,6 +75,7 @@ func initAttributeMap() {
 
 	closeBoxFloor := getAttribute(getStringArray("상자", "박스"), "", getPlace(0, 6), getPlace(3, 4), getPlace(3, 12), getPlace(11, 8))
 	openBox := getAttribute(getStringArray("닫힌 상자", "닫힌 박스"), "")
+	empty := getAttribute(getStringArray("없음"), "")
 
 	attributeMap = map[Component]Attribute{
 		door.getComponent(codeGoalDoor):  goalDoor,
@@ -103,6 +104,7 @@ func initAttributeMap() {
 
 		box.getComponent(codeCloseBox): closeBoxFloor,
 		box.getComponent(codeOpenBox):  openBox,
+		Component{} : empty,
 	}
 }
 
@@ -170,12 +172,12 @@ func GetDoorAndItem(scan string) (commandDoor Component, commandItem Component) 
 					// case enemy:
 					// 	tooMany, commandEnemy = commandEnemy.ifNotEmpty(component)
 				}
-			}
+			}	
+		}
 
-			if tooMany {
-				doNotTooManyCommandScript.print()
-				return
-			}
+		if tooMany {
+			// doNotTooManyCommandScript.print()
+			return
 		}
 	}
 	return

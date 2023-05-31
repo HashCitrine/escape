@@ -91,3 +91,21 @@ func printInventory() {
 	fmt.Println()
 	fmt.Println()
 }
+
+func printEquipment() {
+	head := player.head
+	top := player.top
+	pants := player.pants
+	shoes := player.shoes
+	rightHand := player.rightHand
+	leftHand := player.leftHand
+
+	fmt.Println("[장비]")
+	fmt.Println("머리 : ", head.getName())
+	fmt.Println("상의 : ", top.getName())
+	fmt.Println("하의 : ", pants.getName())
+	fmt.Println("신발 : ", shoes.getName())
+	fmt.Println("오른손 : ", rightHand.getName())
+	fmt.Println("왼손 : ", leftHand.getName())
+	fmt.Println()
+}
