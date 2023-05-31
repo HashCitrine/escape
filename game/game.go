@@ -58,6 +58,7 @@ func Play() {
 		scan := Scan()
 		clearConsole.print()
 		if Action(scan) {
+			getPlaceByCoords(player.currentCoords).printFloorItems()
 			continue
 		}
 		Move(scan)
@@ -150,26 +151,21 @@ func Action(scan string) bool {
 	}
 	place := getPlaceByCoords(player.currentCoords)
 
+	if player.fight {
+		place.combat(interactionCode)
+		return true
+	}
+
 	switch interactionCode {
 	case codeWear:
 		commandItem.wear()
 		return true
 	case codeAttack, codeRun, codeShield, codeRecovery:
-		// place := getPlaceByCoords(gameInfo.playerCoords)
-		/* combatResult := place.combat(scan)
-
-		if combatResult {
-			return
-		} */
-
 		place.combat(interactionCode)
 		return true
 	case codeGet:
 		if commandItem.isEmpty() {
 			// todo : 무슨 아이템을 주울까요? - script
-
-			// fieldItems := place.findItem()
-			// todo : item이 바닥에 있다. - script
 			return true
 		}
 
@@ -180,19 +176,20 @@ func Action(scan string) bool {
 			break
 		}
 
-		part := place.parts[0]
-		closeBox := box.getComponent(codeCloseBox)
-		openBox := box.getComponent(codeOpenBox)
+		for index, part := range place.parts {
+			closeBox := box.getComponent(codeCloseBox)
+			openBox := box.getComponent(codeOpenBox)
 
-		if part == closeBox {
-			closeBox.Drop()
-			place.parts[0] = openBox
-			return true
+			switch part {
+			case closeBox:
+				closeBox.Drop()
+				place.parts[index] = openBox
+				return true
+			case openBox:
+				openBoxScript.print()
+			}
 		}
 
-		if part == openBox {
-			openBoxScript.print()
-		}
 	}
 
 	// enemy
@@ -289,18 +286,23 @@ func Move(scan string) {
 	// directionName := movement.getDirectionName()
 
 	directionCoords := newCoords(player.currentCoords, moveCoords)
+	directionPlace := getPlaceByCoords(directionCoords)
+
 	if !directionCoords.isPassable() {
+		if (*directionPlace).isDoor() {
+			doorName := (*directionPlace).getDoorName()
+			closeDoorScript.print(doorName)
+			return
+		}
+
 		blankScript.print(directionName)
 		return
 	}
-
-	directionPlace := getPlaceByCoords(directionCoords)
 
 	if (*directionPlace).isOpen() {
 		if directionCoords == player.goalCoords {
 			// endGame = true
 			updatePlayerPlace(directionCoords /* , directionPlace */)
-			directionPlace.printParts()
 			return
 		}
 
@@ -311,13 +313,6 @@ func Move(scan string) {
 		directionPlace = getPlaceByCoords(directionCoords)
 
 		updatePlayerPlace(directionCoords /* , directionPlace */)
-		directionPlace.printParts()
-		return
-	}
-
-	if (*directionPlace).isDoor() {
-		doorName := (*directionPlace).getDoorName()
-		closeDoorScript.print(doorName)
 		return
 	}
 
@@ -333,7 +328,6 @@ func Move(scan string) {
 
 	// 현재 위치 업데이트
 	updatePlayerPlace(directionCoords /* , directionPlace */)
-	directionPlace.printParts()
 }
 
 func isEnd() bool {
@@ -356,11 +350,14 @@ func isEnd() bool {
 func (block *Block) combat(code Interaction) bool {
 	blockEnemy := enemyMap[block]
 
-	if blockEnemy.component.isEmpty() {
+	if blockEnemy.component.isEmpty() && code != codeRecovery {
 		// todo : 적이 없다. - script
 		return false
 	}
 
+	player.fight = true
+
+	enemyName := blockEnemy.component.getName()
 	enemyOffence := blockEnemy.common.offence
 	defense := player.getDefense()
 
@@ -369,7 +366,8 @@ func (block *Block) combat(code Interaction) bool {
 		rand.Seed(time.Now().UnixNano())
 		result := rand.Float64() * 100
 
-		if result > 0.5 {
+		if result > 50 {
+			player.fight = false
 			return false
 		}
 	case codeAttack:
@@ -377,15 +375,21 @@ func (block *Block) combat(code Interaction) bool {
 		rightAttack := player.rightHand.getOffense()
 		leftAttack := player.leftHand.getOffense()
 
-		playerOffence += rightAttack + leftAttack
-		blockEnemy.hp -= playerOffence
+		attack := playerOffence + rightAttack
+		blockEnemy.hp -= attack
+		attackedScript.print(enemyName, attack)
+
+		if !player.leftHand.isEmpty() {
+			attack = playerOffence + leftAttack
+			blockEnemy.hp -= attack
+			attackedScript.print(enemyName, attack)
+		}
+
 		enemyMap[block] = blockEnemy
 
-		attackedScript.print(blockEnemy.component.getName(), playerOffence)
-		enemyInfoScript.print(blockEnemy.component.getName(), blockEnemy.hp)
-
 		if blockEnemy.hp <= 0 {
-			// todo : enenmy가 죽었다. - script
+			enemyInfoScript.print(enemyName, 0)
+			enemyKillScript.print(enemyName)
 			blockEnemy.component.Drop()
 			parts := (*block).parts
 			for i, part := range parts {
@@ -393,14 +397,28 @@ func (block *Block) combat(code Interaction) bool {
 					(*block).parts = append(parts[:i], parts[i+1:]...)
 				}
 			}
+			enemyMap[block] = Enemy{}
+			player.fight = false
 			return true
 		}
+
+		enemyInfoScript.print(blockEnemy.component.getName(), blockEnemy.hp)
+
 	case codeShield:
 		defense += player.rightHand.getDefense() + player.leftHand.getDefense()
 	case codeRecovery:
-		if useItem(item.getComponent(codePortion)) {
-			blockEnemy.hp += 30
-		}
+		/* if useItem(item.getComponent(codePortion)) {
+			player.hp += 30
+
+			if player.hp > player.maxHp {
+				player.hp = player.maxHp
+			}
+		} */
+		recovery()
+		return true
+		default:
+			fightingScript.print(enemyName)
+			return false
 	}
 
 	enemyOffence -= defense
@@ -412,4 +430,20 @@ func (block *Block) combat(code Interaction) bool {
 	player.hp -= enemyOffence
 	attackedScript.print("고양이", enemyOffence)
 	return true
+}
+
+func recovery() {
+	if player.hp >= player.maxHp {
+		alreadyMaxHp.print()
+	}
+
+	if useItem(item.getComponent(codePortion)) {
+		player.hp += 30
+
+		if player.hp > player.maxHp {
+			player.hp = player.maxHp
+		}
+	} else {
+		notHaveItemScript.print(codePortion)
+	}
 }

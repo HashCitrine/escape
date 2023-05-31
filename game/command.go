@@ -67,6 +67,7 @@ func initInteractionCommandMap() {
 
 		"착용": {codeWear},
 		"장착": {codeWear},
+		"장비": {codeWear},
 		"입기": {codeWear},
 	}
 }

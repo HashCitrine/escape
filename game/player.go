@@ -7,13 +7,13 @@ type Player struct {
 	name          string
 	currentCoords Coords
 	inventory     []Component
-	// player       Player
 	head      Component
 	top       Component
 	pants     Component
 	shoes     Component
 	rightHand Component
 	leftHand  Component
+	fight	  bool
 	Charactor
 }
 
@@ -39,8 +39,9 @@ func initPlayer(currentCoords Coords, goalCoords Coords) {
 	}
 }
 
-func updatePlayerPlace(tempPlaceCoords Coords /* , tempPlace *Code */) {
-	player.currentCoords = tempPlaceCoords
+func updatePlayerPlace(directionCoords Coords /* , tempPlace *Code */) {
+	player.currentCoords = directionCoords
+	getPlaceByCoords(directionCoords).printFloorItems()
 }
 
 func (playInfo Player) getAroundDoorCoords() (*Block, string) {

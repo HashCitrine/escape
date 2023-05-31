@@ -8,7 +8,7 @@ import (
 type DropItem struct {
 	item        Component
 	amount      int
-	probability int
+	probability float64
 }
 
 var dropItemMap map[Component][]DropItem
@@ -32,7 +32,7 @@ func InitDropItemMap() {
 	leatherHat := DropItem{item: leatherHatItem, amount: 1, probability: 10}
 	notDrop := DropItem{probability: 10}
 	boxDrop := []DropItem{
-		woodSword, ironSword,
+		notDrop, woodSword, ironSword,
 		leatherRobe, leatherPants, leatherHat,
 		portion1, portion2, portion3,
 	}
@@ -71,7 +71,7 @@ func (component Component) Drop() {
 	result := rand.Float64() * 100
 
 	for _, drop := range dropTable {
-		result -= float64(drop.probability)
+		result -= drop.probability
 
 		if result <= 0 {
 			dropItem := drop.item

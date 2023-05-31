@@ -5,7 +5,6 @@ type Block struct {
 	passable bool
 }
 
-
 func (block Block) isDoor() bool {
 	return len(block.parts) == 1 && block.parts[0].isDoor()
 }
@@ -45,7 +44,7 @@ func (block *Block) findItem() []Component {
 	return result
 }
 
-func (block *Block) printParts() {
+func (block *Block) printFloorItems() {
 	parts := block.parts
 
 	for _, part := range parts {

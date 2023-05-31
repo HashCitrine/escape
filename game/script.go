@@ -22,9 +22,10 @@ const (
 const (
 	startScript    Narration = "당신의 고양이 "+ name + "(이)가 미로의 함정에 빠졌습니다. 빠져나갈 수 있도록 지시를 내려야 합니다."
 	endScript      Narration = "밝은 빛이 보입니다. 당신의 고양이는 탈출에 성공했습니다."
-	deadScript Narration = "당신의 고양이 "+ name + "(이)가 더 이상 움직이지 않습니다. 당신은 동물학대범입니다."
+	deadScript Narration = "당신의 고양이 "+ name + "(이)가 더 이상 움직이지 않습니다. 당신은 영락 없는 동물학대범입니다."
 	questionScript Narration = "어떤 행동을 하시겠습니까?"
 	noDropScript Narration = "아이템이 떨어지지 않았습니다."
+	alreadyMaxHp Narration = "이미 체력이 가득 차 있습니다."
 )
 
 const (
@@ -43,12 +44,15 @@ const (
 	doNotActByItemScript      Fnarration = "%s를 가지고 있습니다."
 	// doNotActByDoorScript      Fnarration = "%s을 열 방법을 찾아야 한다."
 	canNotFindAroundDoor Fnarration = "%s에 %s를 사용할 수 있을까? 확인해보자."
-	dropItemScript       Fnarration = "%s를 떨어뜨렸다."
+	dropItemScript       Fnarration = "%s(을)를 떨어뜨렸다."
+	floorItemScript		Fnarration = "%s이 떨어져있다."
 	findSomethingScript  Fnarration = "%s(이)가 있다."
 	attackedScript Fnarration = "%s가 %d만큼 데미지를 입었다."
 	enemyInfoScript Fnarration = "%s의 HP : %d"
+	enemyKillScript Fnarration = "%s(은)는 싸늘한 주검이 되었다."
 	playerInfoScript Fnarration = "HP : %d"
 	wearScript Fnarration = "%s를 착용했다."
+	fightingScript Fnarration = name + "(은)는 %s와 목숨을 건 사투를 벌이고 있다. 싸움에 집중하자."
 )
 
 func print(script string) {
