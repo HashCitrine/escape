@@ -34,8 +34,8 @@ const (
 var floorPlace = []Coords{
 	{0, 6},
 	{1, 6},
-	{2, 0}, /* {2, 1}, */ {2, 2}, {2, 6},
-	{3, 2}, {3, 4}, /* {3, 4}, */ {3, 6}, {3, 7}, {3, 8}, {3, 9}, {3, 10}, /* {3, 10}, */ {3, 12},
+	{2, 0} /* {2, 1}, */, {2, 2}, {2, 6},
+	{3, 2}, {3, 4} /* {3, 4}, */, {3, 6}, {3, 7}, {3, 8}, {3, 9}, {3, 10} /* {3, 10}, */, {3, 12},
 	{4, 2}, {4, 6}, {4, 8},
 	{5, 2}, {5, 6}, {5, 8},
 	/* {6, 2}, */ {6, 6}, {6, 8},
@@ -59,10 +59,10 @@ func initAttributeMap() {
 
 	woodSword := getAttribute(getStringArray("목검"), "", getPlace(8, 12))
 	ironSword := getAttribute(getStringArray("철검"), "", nil)
-	woodShield :=  getAttribute(getStringArray("나무 방패"), "", nil)
-	leatherRobe :=  getAttribute(getStringArray("가죽옷"), "", nil)
-	leatherPants :=  getAttribute(getStringArray("가죽바지"), "", nil)
-	leatherShoes :=  getAttribute(getStringArray("가죽신발"), "", nil)
+	woodShield := getAttribute(getStringArray("나무 방패"), "", nil)
+	leatherRobe := getAttribute(getStringArray("가죽옷"), "", nil)
+	leatherPants := getAttribute(getStringArray("가죽바지"), "", nil)
+	leatherShoes := getAttribute(getStringArray("가죽신발"), "", nil)
 	portion := getAttribute(getStringArray("포션"), "", getPlace(3, 8))
 
 	/* openGoalDoor := getAttribute(goalDoor.commands, "%", nil)
@@ -74,7 +74,7 @@ func initAttributeMap() {
 	deer := getAttribute(getStringArray("사슴", "시슴"), "", getPlace(7, 2))
 
 	closeBoxFloor := getAttribute(getStringArray("상자", "박스"), "", getPlace(0, 6), getPlace(3, 4), getPlace(3, 12), getPlace(11, 8))
-	openBox := getAttribute(getStringArray("닫힌 상자", "닫힌 박스"), "", )
+	openBox := getAttribute(getStringArray("닫힌 상자", "닫힌 박스"), "")
 
 	attributeMap = map[Component]Attribute{
 		door.getComponent(codeGoalDoor):  goalDoor,
@@ -85,13 +85,13 @@ func initAttributeMap() {
 		item.getComponent(codeHammer): hammer,
 		item.getComponent(codeHand):   hand,
 
-		item.getComponent(codeWoodSword): woodSword,
-		item.getComponent(codeIronSword): ironSword,
-		item.getComponent(codeWoodShield): woodShield,
-		item.getComponent(codeLeatherRobe): leatherRobe,
+		item.getComponent(codeWoodSword):    woodSword,
+		item.getComponent(codeIronSword):    ironSword,
+		item.getComponent(codeWoodShield):   woodShield,
+		item.getComponent(codeLeatherRobe):  leatherRobe,
 		item.getComponent(codeLeatherPants): leatherPants,
 		item.getComponent(codeLeatherShoes): leatherShoes,
-		item.getComponent(codePortion) : portion,
+		item.getComponent(codePortion):      portion,
 
 		enemy.getComponent(codeSquirrel): squirrel,
 		enemy.getComponent(codeRabbit):   rabbit,
@@ -102,7 +102,7 @@ func initAttributeMap() {
 		door.getComponent(codeWoodDoor):  openWoodDoor, */
 
 		box.getComponent(codeCloseBox): closeBoxFloor,
-		box.getComponent(codeOpenBox): openBox,
+		box.getComponent(codeOpenBox):  openBox,
 	}
 }
 

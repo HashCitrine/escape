@@ -248,7 +248,7 @@ func Action(scan string) bool {
 			// door check
 			if len(interactionArray) > 0 {
 				for _, tempInteractionCode := range interactionArray {
-					if tempInteractionCode.isCanDo(commandDoor, commandItem) {
+					if tempInteractionCode.isCanDo(commandDoor, commandItem) && hasItem(commandItem) {
 						// interaction = tempInteractionCode
 						useItemToDoorScript.print(commandItem.getName(), commandDoor.getName())
 						(*aroundDoor).passable = true

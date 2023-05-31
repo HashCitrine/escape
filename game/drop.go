@@ -84,6 +84,7 @@ func (component Component) Drop() {
 			}
 
 			dropItemScript.print(dropItem.getName())
+			break
 		}
 	}
 
