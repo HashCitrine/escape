@@ -17,9 +17,7 @@ type Attribute struct {
 	icon     string
 	place    []*Block
 }
-
-var attributeMap map[Component]Attribute
-
+	
 const (
 	playerIcon    = "🐈"
 	floorIcon     = "⬜"
@@ -30,6 +28,9 @@ const (
 	keyIcon       = "🗝️"
 	hammerIcon    = "🔨"
 )
+
+var attributeMap map[Component]Attribute
+var fieldArray [12][13]Block
 
 var floorPlace = []Coords{
 	{0, 6},
@@ -44,6 +45,11 @@ var floorPlace = []Coords{
 	{9, 8}, {9, 12},
 	/* {10, 7}, */ {10, 12},
 	{11, 8}, {11, 12},
+}
+
+func init() {
+	initAttributeMap()
+	initField()
 }
 
 func initAttributeMap() {

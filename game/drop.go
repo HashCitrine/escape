@@ -11,58 +11,6 @@ type DropItem struct {
 	probability float64
 }
 
-var dropItemMap map[Component][]DropItem
-
-func InitDropItemMap() {
-	portionItem := item.getComponent(codePortion)
-	woodSwordItem := item.getComponent(codeWoodSword)
-	ironSwordItem := item.getComponent(codeIronSword)
-	// woodShield := item.getComponent(codeWoodShield)
-	leatherRobeItem := item.getComponent(codeLeatherRobe)
-	leatherPantsItem := item.getComponent(codeLeatherPants)
-	leatherHatItem := item.getComponent(codeLeatherShoes)
-
-	portion1 := DropItem{item: portionItem, amount: 1, probability: 15}
-	portion2 := DropItem{item: portionItem, amount: 2, probability: 10}
-	portion3 := DropItem{item: portionItem, amount: 3, probability: 5}
-	woodSword := DropItem{item: woodSwordItem, amount: 1, probability: 20}
-	ironSword := DropItem{item: ironSwordItem, amount: 1, probability: 15}
-	leatherRobe := DropItem{item: leatherRobeItem, amount: 1, probability: 7}
-	leatherPants := DropItem{item: leatherPantsItem, amount: 1, probability: 8}
-	leatherHat := DropItem{item: leatherHatItem, amount: 1, probability: 10}
-	notDrop := DropItem{probability: 10}
-	boxDrop := []DropItem{
-		notDrop, woodSword, ironSword,
-		leatherRobe, leatherPants, leatherHat,
-		portion1, portion2, portion3,
-	}
-
-	portion1 = DropItem{item: portionItem, amount: 1, probability: 70}
-	notDrop = DropItem{probability: 30}
-	squirrelDrop := []DropItem{
-		portion1, notDrop,
-	}
-
-	portion1 = DropItem{item: portionItem, amount: 1, probability: 50}
-	portion2 = DropItem{item: portionItem, amount: 2, probability: 30}
-	notDrop = DropItem{probability: 20}
-	rabbitDrop := []DropItem{
-		portion1, portion2, notDrop,
-	}
-
-	key := DropItem{item: item.getComponent(codeKey), amount: 1, probability: 100}
-	deerDrop := []DropItem{
-		key,
-	}
-
-	dropItemMap = map[Component][]DropItem{
-		box.getComponent(codeCloseBox):         boxDrop,
-		enemy.getComponent(Code(codeSquirrel)): squirrelDrop,
-		enemy.getComponent(Code(codeRabbit)):   rabbitDrop,
-		enemy.getComponent(Code(codeDeer)):     deerDrop,
-	}
-}
-
 func (component Component) Drop() {
 	dropTable := dropItemMap[component]
 	place := getPlaceByCoords(player.currentCoords)

@@ -7,23 +7,6 @@ import (
 	"time"
 )
 
-var fieldArray [12][13]Block
-var player Player
-
-// var endGame = false
-
-func init() {
-	initAttributeMap()
-	initField()
-	// initActMap()
-	initMovementCommandMap()
-	initInteractionCommandMap()
-	InitDropItemMap()
-	initEnenyMap()
-	initEquipmentMap()
-	initPlayer(Coords{y: 11, x: 12}, Coords{y: 2, x: 0})
-}
-
 func initField() {
 	/* fieldArray = make([][]Component, 6)
 
@@ -58,7 +41,9 @@ func Play() {
 		scan := Scan()
 		clearConsole.print()
 		if Action(scan) {
-			getPlaceByCoords(player.currentCoords).printFloorItems()
+			if(!player.fight) {
+				getPlaceByCoords(player.currentCoords).printFloorItems()
+			}
 			continue
 		}
 		Move(scan)
@@ -130,7 +115,7 @@ func PrintScript() {
 
 	aroundDoor, doorSideDirection := player.getAroundDoorCoords()
 	if aroundDoor != nil {
-		doorName := (*aroundDoor).getDoorName()
+		doorName := aroundDoor.getDoorName()
 		lookAtTheDoorscript.print(doorSideDirection, doorName)
 		fmt.Println()
 	}
@@ -226,7 +211,7 @@ func Action(scan string) bool {
 
 	if !commandDoor.isEmpty() && !commandItem.isEmpty() {
 		if ifDoor != nil && ifDoorIsOpen {
-			alreadyOpenDoorScript.print((*ifDoor).getDoorName())
+			alreadyOpenDoorScript.print(ifDoor.getDoorName())
 			return true
 		}
 
@@ -289,8 +274,8 @@ func Move(scan string) {
 	directionPlace := getPlaceByCoords(directionCoords)
 
 	if !directionCoords.isPassable() {
-		if (*directionPlace).isDoor() {
-			doorName := (*directionPlace).getDoorName()
+		if directionPlace != nil && directionPlace.isDoor() {
+			doorName := directionPlace.getDoorName()
 			closeDoorScript.print(doorName)
 			return
 		}
@@ -299,14 +284,14 @@ func Move(scan string) {
 		return
 	}
 
-	if (*directionPlace).isOpen() {
+	if directionPlace.isOpen() {
 		if directionCoords == player.goalCoords {
 			// endGame = true
 			updatePlayerPlace(directionCoords /* , directionPlace */)
 			return
 		}
 
-		doorName := (*directionPlace).getDoorName()
+		doorName := directionPlace.getDoorName()
 		passDoorScript.print(doorName)
 
 		directionCoords = newCoords(directionCoords, moveCoords)
@@ -416,9 +401,9 @@ func (block *Block) combat(code Interaction) bool {
 		} */
 		recovery()
 		return true
-		default:
-			fightingScript.print(enemyName)
-			return false
+	default:
+		fightingScript.print(enemyName)
+		return false
 	}
 
 	enemyOffence -= defense
@@ -435,15 +420,17 @@ func (block *Block) combat(code Interaction) bool {
 func recovery() {
 	if player.hp >= player.maxHp {
 		alreadyMaxHp.print()
+		return
 	}
 
-	if useItem(item.getComponent(codePortion)) {
+	portion := item.getComponent(codePortion)
+	if useItem(portion) {
 		player.hp += 30
 
 		if player.hp > player.maxHp {
 			player.hp = player.maxHp
 		}
 	} else {
-		notHaveItemScript.print(codePortion)
+		notHaveItemScript.print(portion.getName())
 	}
 }

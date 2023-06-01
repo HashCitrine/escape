@@ -5,17 +5,19 @@ type Block struct {
 	passable bool
 }
 
-func (block Block) isDoor() bool {
-	return len(block.parts) == 1 && block.parts[0].isDoor()
+func (block *Block) isDoor() bool {
+	place := *block
+	return len(place.parts) == 1 && place.parts[0].isDoor()
 }
 
 func (block *Block) isOpen() bool {
-	return (*block).passable && (*block).isDoor()
+	return (*block).passable && block.isDoor()
 }
 
-func (block Block) getDoorName() string {
-	if block.isDoor() {
-		return block.parts[0].getName()
+func (block *Block) getDoorName() string {
+	doorPlace := *block
+	if doorPlace.isDoor() {
+		return doorPlace.parts[0].getName()
 	}
 
 	return ""

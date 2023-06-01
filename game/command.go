@@ -9,69 +9,6 @@ type Acting struct {
 	coords Coords
 }
 
-var movementCommandMap map[Command]Movement
-var interactionCommandMap map[Command][]Interaction
-
-func initMovementCommandMap() {
-	movementCommandMap = map[Command]Movement{
-		"위": codeUp,
-		"앞": codeUp,
-		"상": codeUp,
-		"북": codeUp,
-
-		"아래": codeDown,
-		"밑":  codeDown,
-		"하":  codeDown,
-		"남":  codeDown,
-
-		"오른": codeRight,
-		"우":  codeRight,
-		"동":  codeRight,
-
-		"왼": codeLeft,
-		"좌": codeLeft,
-		"서": codeLeft,
-
-		/* "연":  {codeOpen, codeBreak, codeUnlock},
-		"열":  {codeOpen, codeBreak, codeUnlock},
-		"사용": {codeOpen, codeBreak, codeUnlock},
-		"이용": {codeOpen, codeBreak, codeUnlock},
-
-		"부수": {codeBreak},
-		"부순": {codeBreak},
-		"깨":  {codeBreak},
-		"깬":  {codeBreak}, */
-
-		// "줍": {getHammer, getKey},
-	}
-}
-
-func initInteractionCommandMap() {
-	interactionCommandMap = map[Command][]Interaction{
-		"연":  {codeOpen, codeBreak, codeUnlock},
-		"열":  {codeOpen, codeBreak, codeUnlock},
-		"사용": {codeOpen, codeBreak, codeUnlock},
-		"이용": {codeOpen, codeBreak, codeUnlock},
-
-		"부수": {codeBreak},
-		"부순": {codeBreak},
-		"깨":  {codeBreak},
-		"깬":  {codeBreak},
-
-		"줍": {codeGet},
-
-		"도망": {codeRun},
-		"공격": {codeAttack},
-		"방어": {codeShield},
-		"회복": {codeRecovery},
-
-		"착용": {codeWear},
-		"장착": {codeWear},
-		"장비": {codeWear},
-		"입기": {codeWear},
-	}
-}
-
 func (act Movement) getDirectionInfo() (coords Coords, directionName string) {
 	// coords := Coords{}
 	coordsArray := getAroundCoords(coords)

@@ -17,6 +17,13 @@ type Player struct {
 	Charactor
 }
 
+var player Player
+
+func init() {
+	initPlayer(Coords{y: 11, x: 12}, Coords{y: 2, x: 0})
+}
+
+
 func initPlayer(currentCoords Coords, goalCoords Coords) {
 
 	whatsYourNameScript.print()
@@ -49,7 +56,7 @@ func (playInfo Player) getAroundDoorCoords() (*Block, string) {
 
 	for i, coords := range coordsArray {
 		place := getPlaceByCoords(coords)
-		if place != nil && (*place).isDoor() {
+		if place != nil && place.isDoor() {
 			_, directionName := Movement(i + 1).getDirectionInfo()
 			return place, directionName
 		}
@@ -109,4 +116,8 @@ func printEquipment() {
 	fmt.Println("오른손 : ", rightHand.getName())
 	fmt.Println("왼손 : ", leftHand.getName())
 	fmt.Println()
+}
+
+func (player Player) getDefense() int {
+	return player.common.defense + player.head.getDefense() + player.top.getDefense() + player.pants.getDefense()
 }
